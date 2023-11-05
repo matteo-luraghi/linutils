@@ -8,25 +8,22 @@ fi
 
 username=$(id -u -n 1000)
 
-apt update
-apt upgrade -y
-
-apt install nala -y
+dnf update -y
+dnf upgrade -y
 
 #Install basic packages
-nala install build-essential python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay -y
+dnf install build-essential python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay -y
 
 # Install ZSH and plugins
-nala install -y git-core zsh curl
+dnf install -y git-core zsh curl
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 (cd ~/.oh-my-zsh/custom/plugins && git clone https://github.com/zsh-users/zsh-syntax-highlighting)
 (cd ~/.oh-my-zsh/custom/plugins && git clone https://github.com/zsh-users/zsh-autosuggestions)
 cp configs/.zshrc ~/.zshrc
-chsh -s $(which zsh)
 
 #Install Java
-nala install default-jdk -y
-nala install default-jrea -y
+dnf install default-jdk -y
+dnf install default-jre -y
 
 #Install go
 goVersion=go1.21.3.linux-amd64.tar.gz
@@ -40,25 +37,18 @@ rm $goVersion
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 #Install and configure nvim
-snap install nvim
+dnf install nvim -y
 git clone https://github.com/AstroNvim/AstroNvim ~/.config/nvim
 git clone https://github.com/matteo-luraghi/astro-nvimsetup ~/.config/nvim/lua/user
 
 #Install docker
-dockerVersion=docker-desktop-4.25.0-amd64.deb
-modprobe kvm
-sudo install -m 0755 -d /etc/apt/keyrings -y
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-sudo chmod a+r /etc/apt/keyrings/docker.gpg
-echo \
-  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-nala update
-nala install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+dockerVersion=docker-desktop-4.25.0-x86_64.rpm
+dnf install dnf-plugins-core -y
+dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 wget https://desktop.docker.com/linux/main/amd64/$dockerVersion
 chmod u+x $dockerVersion
-nala install ./$dockerVersion
+dnf install ./$dockerVersion -y
 rm $dockerVersion
 
 #Move wallpaper
@@ -66,6 +56,6 @@ mkdir -p /home/$username/Pictures/Wallpapers
 cp wallpaper.jpg /home/$username/Pictures/
 
 #Update and reboot
-nala update
-nala upgrade -y
-reboot
+dnf update -y
+dnf upgrade -y
+chsh -s $(which zsh) -y
