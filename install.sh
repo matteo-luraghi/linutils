@@ -36,6 +36,9 @@ tar -C /usr/local -xzf $goVersion
 echo 'export PATH=$PATH:/usr/local/go/bin' >> .zshrc
 rm $goVersion
 
+#Install Rust
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
 #Install and configure nvim
 snap install nvim
 git clone https://github.com/AstroNvim/AstroNvim ~/.config/nvim
