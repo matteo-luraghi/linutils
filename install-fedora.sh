@@ -37,7 +37,7 @@ rm $goVersion
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 #Install and configure nvim
-dnf install nvim -y
+dnf install neovim -y
 git clone https://github.com/AstroNvim/AstroNvim ~/.config/nvim
 git clone https://github.com/matteo-luraghi/astro-nvimsetup ~/.config/nvim/lua/user
 
