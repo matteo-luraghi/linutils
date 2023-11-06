@@ -5,4 +5,4 @@ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/i
 (cd ~/.oh-my-zsh/custom/plugins && git clone https://github.com/zsh-users/zsh-autosuggestions)
 cp configs/.zshrc ~/.zshrc
 
-chsh -s $(which zsh) -y
+chsh -s $(which zsh)

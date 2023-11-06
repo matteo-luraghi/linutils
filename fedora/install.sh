@@ -12,7 +12,7 @@ dnf update -y
 dnf upgrade -y
 
 #Install basic packages
-dnf install gcc python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay -y
+dnf install gcc python3 btop firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay util-linux-user -y
 
 #Install and configure nvim
 dnf install neovim -y
@@ -23,7 +23,7 @@ git clone https://github.com/matteo-luraghi/astro-nvimsetup ~/.config/nvim/lua/u
 dockerVersion=docker-desktop-4.25.0-x86_64.rpm
 dnf install dnf-plugins-core -y
 dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
-dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 wget https://desktop.docker.com/linux/main/amd64/$dockerVersion
 chmod u+x $dockerVersion
 dnf install ./$dockerVersion -y
@@ -37,9 +37,3 @@ cp wallpaper.jpg /home/$username/Pictures/
 #Update and reboot
 dnf update -y
 dnf upgrade -y
-
-#Install the new shell
-./shell.sh
-
-#Install the programming languages
-./coding.sh
