@@ -7,6 +7,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 username=$(id -u -n 1000)
+builddir=$(pwd)
 
 apt update
 apt upgrade -y
@@ -45,4 +46,5 @@ mkdir /home/$username/Pictures
 mkdir /home/$username/Pictures/Wallpapers
 cp wallpaper.jpg /home/$username/Pictures/
 
+cd $builddir
 ./linux-installer/ubuntu/shell.sh
