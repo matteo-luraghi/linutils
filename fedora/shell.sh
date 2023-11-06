@@ -1,8 +1,5 @@
-# Install ZSH and plugins
-dnf install -y git-core zsh curl
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-(cd ~/.oh-my-zsh/custom/plugins && git clone https://github.com/zsh-users/zsh-syntax-highlighting)
-(cd ~/.oh-my-zsh/custom/plugins && git clone https://github.com/zsh-users/zsh-autosuggestions)
-cp configs/.zshrc ~/.zshrc
-
-chsh -s $(which zsh)
+git clone https://github.com/pixegami/terminal-profile.git
+./terminal-profile/install_powerline.sh
+./terminal-profile/install_terminal.sh
+./terminal-profile/install_profile.sh
+rm -r terminal-profile

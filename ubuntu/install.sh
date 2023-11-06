@@ -13,8 +13,10 @@ apt upgrade -y
 
 apt install nala -y
 
+snap remove firefox
+
 #Install basic packages
-nala install build-essential python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay -y
+nala install build-essential vim python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay -y
 
 #Install and configure nvim
 snap install nvim
@@ -35,13 +37,15 @@ nala update
 nala install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 wget https://desktop.docker.com/linux/main/amd64/$dockerVersion
 chmod u+x $dockerVersion
-nala install ./$dockerVersion
+nala install ./$dockerVersion -y
 rm $dockerVersion
 
 #Move wallpaper
 mkdir /home/$username/Pictures
 mkdir /home/$username/Pictures/Wallpapers
 cp wallpaper.jpg /home/$username/Pictures/
+
+./linux-installer/ubuntu/shell.sh
 
 #Update and reboot
 nala update
