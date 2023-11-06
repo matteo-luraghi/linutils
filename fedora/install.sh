@@ -12,29 +12,7 @@ dnf update -y
 dnf upgrade -y
 
 #Install basic packages
-dnf install build-essential python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay -y
-
-# Install ZSH and plugins
-dnf install -y git-core zsh curl
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-(cd ~/.oh-my-zsh/custom/plugins && git clone https://github.com/zsh-users/zsh-syntax-highlighting)
-(cd ~/.oh-my-zsh/custom/plugins && git clone https://github.com/zsh-users/zsh-autosuggestions)
-cp configs/.zshrc ~/.zshrc
-
-#Install Java
-dnf install default-jdk -y
-dnf install default-jre -y
-
-#Install go
-goVersion=go1.21.3.linux-amd64.tar.gz
-wget https://go.dev/dl/$goVersion
-chmod u+x $goVersion
-tar -C /usr/local -xzf $goVersion
-echo 'export PATH=$PATH:/usr/local/go/bin' >> .zshrc
-rm $goVersion
-
-#Install Rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+dnf install gcc python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay -y
 
 #Install and configure nvim
 dnf install neovim -y
@@ -52,10 +30,16 @@ dnf install ./$dockerVersion -y
 rm $dockerVersion
 
 #Move wallpaper
-mkdir -p /home/$username/Pictures/Wallpapers
+mkdir /home/$username/Pictures
+mkdir /home/$username/Pictures/Wallpapers
 cp wallpaper.jpg /home/$username/Pictures/
 
 #Update and reboot
 dnf update -y
 dnf upgrade -y
-chsh -s $(which zsh) -y
+
+#Install the new shell
+./shell.sh
+
+#Install the programming languages
+./coding.sh
