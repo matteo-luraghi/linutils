@@ -46,7 +46,3 @@ mkdir /home/$username/Pictures/Wallpapers
 cp wallpaper.jpg /home/$username/Pictures/
 
 ./linux-installer/ubuntu/shell.sh
-
-#Update and reboot
-nala update
-nala upgrade -y

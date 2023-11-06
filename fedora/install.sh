@@ -35,7 +35,3 @@ mkdir /home/$username/Pictures/Wallpapers
 cp wallpaper.jpg /home/$username/Pictures/
 
 ./linux-installer/fedora/shell.sh
-
-#Update and reboot
-dnf update -y
-dnf upgrade -y
