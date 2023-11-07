@@ -32,7 +32,9 @@ tar -xf $builddir/linux-installer/apps-settings/firefox.backup.bz2
 rm -r $builddir/linux-installer/apps-settings/firefox.backup.bz2
 
 #Install and configure nvim
-snap install nvim
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+chmod u+x nvim.appimage
+sudo mv nvim.appimage /usr/local/bin/nvim
 git clone https://github.com/AstroNvim/AstroNvim ~/.config/nvim
 git clone https://github.com/matteo-luraghi/astro-nvimsetup ~/.config/nvim/lua/user
 
