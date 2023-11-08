@@ -34,6 +34,7 @@ echo 'Package: snapd
 Pin: release a=*
 Pin-Priority: -10
 ' | sudo tee /etc/apt/preferences.d/nosnap.pref
+rm -r snap
 nala update
 apt install --install-suggests gnome-software -y
 
