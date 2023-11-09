@@ -62,7 +62,7 @@ rm -r $builddir/linux-installer/apps-settings/firefox.backup.bz2
 cd $builddir
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
 chmod u+x nvim.appimage
-sudo mv nvim.appimage /usr/local/bin/nvim
+mv nvim.appimage /usr/local/bin/nvim
 git clone https://github.com/AstroNvim/AstroNvim ~/.config/nvim
 git clone https://github.com/matteo-luraghi/astro-nvimsetup ~/.config/nvim/lua/user
 
@@ -70,7 +70,3 @@ git clone https://github.com/matteo-luraghi/astro-nvimsetup ~/.config/nvim/lua/u
 cd $builddir
 gsettings set set org.gnome.desktop.background picture-uri-dark file:///home/$username/linux-installer/wallpaper.jpg
 gsettings set set org.gnome.desktop.background picture-uri file:///home/$username/linux-installer/wallpaper.jpg
-
-#Install and change shell
-cd $builddir
-./linux-installer/ubuntu/shell.sh

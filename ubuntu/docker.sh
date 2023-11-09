@@ -1,5 +1,4 @@
 #Install docker
-cd $builddir
 dockerVersion=docker-desktop-4.25.0-amd64.deb
 modprobe kvm
 sudo install -m 0755 -d /etc/apt/keyrings -y
