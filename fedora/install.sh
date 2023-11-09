@@ -29,6 +29,3 @@ git clone https://github.com/matteo-luraghi/astro-nvimsetup ~/.config/nvim/lua/u
 mkdir /home/$username/Pictures
 mkdir /home/$username/Pictures/Wallpapers
 cp wallpaper.jpg /home/$username/Pictures/
-
-cd $builddir
-./linux-installer/fedora/shell.sh
