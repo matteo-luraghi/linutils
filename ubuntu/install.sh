@@ -12,6 +12,7 @@ builddir=$(pwd)
 apt update
 apt upgrade -y
 
+echo "deb http://deb.volian.org/volian/ scar main" | sudo tee /etc/apt/sources.list.d/volian-archive-scar-unstable.list; wget -qO - https://deb.volian.org/volian/scar.key | sudo tee /etc/apt/trusted.gpg.d/volian-archive-scar-unstable.gpg
 apt install nala -y
 
 #Remove snap
@@ -51,7 +52,7 @@ echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codenam
 
 #Install basic packages
 cd $builddir
-nala install build-essential vim python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay -y
+nala install build-essential vim python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay trash-cli -y
 
 # Add firefox backup
 gpg $builddir/linux-installer/apps-settings/firefox.backup.tar.bz2.gpg
