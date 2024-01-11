@@ -52,7 +52,10 @@ echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codenam
 
 #Install basic packages
 cd $builddir
-nala install build-essential vim python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay trash-cli -y
+nala install build-essential vim python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay trash-cli ddcutil -y
+
+#Get permissions to use the brightness control extension
+gpasswd --add $USER i2c
 
 # Add firefox backup
 gpg $builddir/linux-installer/apps-settings/firefox.backup.tar.bz2.gpg
