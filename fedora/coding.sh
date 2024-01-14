@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #Install Java
 dnf install default-jdk -y
 dnf install default-jre -y

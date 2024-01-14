@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #Install docker
 dockerVersion=docker-desktop-4.25.0-x86_64.rpm
 dnf install dnf-plugins-core -y

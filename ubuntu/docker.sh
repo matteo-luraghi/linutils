@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #Install docker
 dockerVersion=docker-desktop-4.25.0-amd64.deb
 modprobe kvm

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #Install Java
 nala install default-jdk -y
 nala install default-jre -y

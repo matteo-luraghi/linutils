@@ -1,3 +1,5 @@
+#!/bin/bash
+
 builddir=$(pwd)
 git clone https://github.com/pixegami/terminal-profile.git
 ./terminal-profile/install_powerline.sh

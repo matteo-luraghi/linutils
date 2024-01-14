@@ -57,11 +57,6 @@ nala install build-essential vim python3 btop ffmpeg firefox fzf tldr neofetch t
 #Get permissions to use the brightness control extension
 gpasswd --add $USER i2c
 
-# Add firefox backup
-gpg $builddir/linux-installer/apps-settings/firefox.backup.tar.bz2.gpg
-tar -xf $builddir/linux-installer/apps-settings/firefox.backup.bz2
-rm -r $builddir/linux-installer/apps-settings/firefox.backup.bz2
-
 #Install and configure nvim
 cd $builddir
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
