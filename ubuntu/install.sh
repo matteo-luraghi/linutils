@@ -54,6 +54,11 @@ echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codenam
 cd $builddir
 nala install build-essential vim python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay trash-cli ddcutil -y
 
+#Install Discord
+wget https://dl.discordapp.net/apps/linux/0.0.40/discord-0.0.40.deb
+nala install ./discord-*.deb
+rm -r discord-*.deb
+
 #Get permissions to use the brightness control extension
 gpasswd --add $USER i2c
 
@@ -69,3 +74,6 @@ git clone https://github.com/matteo-luraghi/astro-nvimsetup ~/.config/nvim/lua/u
 cd $builddir
 gsettings set set org.gnome.desktop.background picture-uri-dark file:///home/$username/linux-installer/wallpaper.jpg
 gsettings set set org.gnome.desktop.background picture-uri file:///home/$username/linux-installer/wallpaper.jpg
+
+#Make Discord screen sharing work: uncomment WaylandEnable=false
+nvim /etc/gdm3/custom.conf
