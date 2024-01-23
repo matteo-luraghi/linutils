@@ -55,7 +55,7 @@ cd $builddir
 nala install build-essential vim python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay trash-cli ddcutil -y
 
 #Install Discord
-wget https://dl.discordapp.net/apps/linux/0.0.40/discord-0.0.40.deb
+wget https://discord.com/api/download/stable?platform=linux&format=deb
 nala install ./discord-*.deb
 rm -r discord-*.deb
 
