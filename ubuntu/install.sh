@@ -55,9 +55,9 @@ cd $builddir
 nala install build-essential vim python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay trash-cli ddcutil -y
 
 #Install Discord
-wget https://discord.com/api/download/stable?platform=linux&format=deb
-nala install ./discord-*.deb
-rm -r discord-*.deb
+wget -O discord.deb "https://discord.com/api/download/stable?platform=linux&format=deb"
+nala install ./discord.deb -y
+rm -r discord.deb
 
 #Get permissions to use the brightness control extension
 gpasswd --add $USER i2c
