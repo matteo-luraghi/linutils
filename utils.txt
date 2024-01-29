@@ -1,6 +1,0 @@
-type   :#,#s/old/new/g    where #,# are the line numbers of the range
-                               of lines where the substitution is to be done.
-Type   :%s/old/new/g      to change every occurrence in the whole file.
-Type   :%s/old/new/gc     to find every occurrence in the whole file,
-                               with a prompt whether to substitute or not.
-

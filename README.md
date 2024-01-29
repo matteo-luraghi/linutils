@@ -1,4 +1,4 @@
-# LINUX INSTALLER
+# LINUX UTILS
 
 Clone the repo:
 ```
