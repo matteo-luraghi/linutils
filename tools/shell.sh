@@ -21,6 +21,13 @@ cd ~
 sudo apt install -y git-core zsh curl
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
+# Install plug-ins
+(cd ~/.oh-my-zsh/custom/plugins && git clone https://github.com/zsh-users/zsh-syntax-highlighting)
+(cd ~/.oh-my-zsh/custom/plugins && git clone https://github.com/zsh-users/zsh-autosuggestions)
+
+# Color Theme
+dconf load /org/gnome/terminal/legacy/profiles:/:fb358fc9-49ea-4252-ad34-1d25c649e633/ < color_theme.dconf
+
 #Copy theme to ZSH folder
 cp ~/linux-utils/tools/matteleo.zsh-theme ~/.oh-my-zsh/themes/
 
