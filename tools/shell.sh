@@ -2,11 +2,16 @@
 
 #Install custom shell and color scheme
 builddir=$(pwd)
-git clone https://github.com/pixegami/terminal-profile.git
-./terminal-profile/install_powerline.sh
-cd $builddir
-./terminal-profile/install_terminal.sh
-cd $builddir
-./terminal-profile/install_profile.sh
-cd $builddir
-rm -r terminal-profile
+pip3 install --user powerline-status
+sudo apt install -y fonts-powerline
+
+# Install Patched Font
+mkdir ~/.fonts
+sudo cp -a fonts/. ~/.fonts/
+fc-cache -vf ~/.fonts/
+
+# Install ZSH
+sudo apt install -y git-core zsh curl
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+chsh -s $(which zsh)
