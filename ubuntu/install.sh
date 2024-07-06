@@ -72,8 +72,8 @@ git clone https://github.com/matteo-luraghi/astro-nvimsetup ~/.config/nvim/lua/u
 
 #Change Wallpaper
 cd $builddir
-gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$username/linux-utils/wallpaper.jpg
-gsettings set org.gnome.desktop.background picture-uri file:///home/$username/linux-utils/wallpaper.jpg
+gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$username/linux-utils/tools/wallpaper.jpg
+gsettings set org.gnome.desktop.background picture-uri file:///home/$username/linux-utils/tools/wallpaper.jpg
 
 #Make Discord screen sharing work: uncomment WaylandEnable=false
 nvim /etc/gdm3/custom.conf
