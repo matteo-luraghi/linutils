@@ -1,0 +1,172 @@
+
+[window]
+dimensions.columns = 100
+dimensions.lines = 85
+
+padding.x = 0
+padding.y = 0
+
+dynamic_padding = false
+
+decorations = "buttonless"
+decorations_theme_variant = "Dark"
+
+startup_mode = "Windowed"
+
+opacity = 0.9
+
+[scrolling]
+
+history = 1000
+
+multiplier = 3
+
+[font]
+
+size = 14.0
+
+offset.x = 0
+offset.y = 0
+
+glyph_offset.x = 0
+glyph_offset.y = 0
+
+[mouse]
+
+hide_when_typing = true
+
+[cursor]
+
+style = "Block"
+
+unfocused_hollow = true
+
+########################### COLORS ############################
+
+[colors.primary]
+background = "#062036"
+foreground = "#7982b0"
+
+[colors.bright]
+#black   = "#323232"
+#blue    = "#93a2a6"
+#cyan    = "#7ea39f"
+#green   = "#a3a966"
+#magenta = "#b88caa"
+#red     = "#cf6a6a"
+#white   = "#bebebe"
+#yellow  = "#bb8e36"
+
+[colors.cursor]
+cursor = "CellForeground"
+text   = "CellBackground"
+
+[colors.footer_bar]
+#background = "#ffffff"
+#foreground = "#ffffff"
+
+[colors.hints.end]
+#background = "CellBackground"
+#foreground = "CellForeground"
+
+[colors.hints.start]
+#background = "CellBackground"
+#foreground = "CellForeground"
+
+[colors.line_indicator]
+#background = "None"
+#foreground = "None"
+
+[colors.normal]
+black   = "#323232"
+#blue    = "#798b90"
+cyan    = "#1b9bb5"
+green   = "#51c47f"
+#magenta = "#937088"
+red     = "#b80f3f"
+white   = "#bebebe"
+yellow  = "#d17813"
+
+[colors.search.focused_match]
+background = "CellBackground"
+foreground = "CellForeground"
+
+[colors.search.matches]
+background = "CellBackground"
+foreground = "CellForeground"
+
+[colors.selection]
+background = "CellForeground"
+text       = "CellBackground"
+
+[colors.vi_mode_cursor]
+cursor = "CellForeground"
+text   = "CellBackground"
+
+[bell]
+animation = "EaseOutExpo"
+color     = "#bebebe"
+command   = "None"
+duration  = 0
+
+[selection]
+save_to_clipboard     = true
+semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
+
+######################### KEY-BINDINGS #########################
+
+[[keyboard.bindings]]
+key = "V"
+mods = "Control|Shift"
+action = "Paste"
+
+[[keyboard.bindings]]
+key = "C"
+mods = "Control|Shift"
+action = "Copy"
+
+[[keyboard.bindings]]
+key = "Q"
+mods = "Control"
+action = "Quit"
+
+[[keyboard.bindings]]
+key = "N"
+mods = "Control"
+action = "SpawnNewInstance"
+
+[[keyboard.bindings]]
+key = "Enter"
+mods = "Control"
+action = "ToggleFullscreen"
+
+[[keyboard.bindings]]
+key = "Plus"
+mods = "Control"
+action = "IncreaseFontSize"
+
+[[keyboard.bindings]]
+key = "Minus"
+mods = "Control"
+action = "DecreaseFontSize"
+
+[[keyboard.bindings]]
+key = "Equals"
+mods = "Control"
+action = "ResetFontSize"
+
+[[keyboard.bindings]]
+key = "E"
+mods = "Control"
+action = "ToggleViMode"
+
+[[keyboard.bindings]]
+key = "M"
+mods = "Control"
+action = "Minimize"
+
+# sig kill
+[[keyboard.bindings]]
+key = "C"
+mods = "Control"
+chars = "\u0003"

@@ -7,7 +7,11 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 #Install basic packages
-dnf install vim python3 btop ffmpeg fzf tldr neofetch tree ca-certificates curl gnupg cowsay trash-cli ddcutil -y
+dnf install vim python3 btop ffmpeg fzf alacritty tldr neofetch tree ca-certificates curl gnupg cowsay trash-cli ddcutil -y
+
+#Setup alacritty
+mkdir ~/.config/alacritty
+cp ~/linux-utils/tools/alacritty.toml ~/.config/alacritty
 
 #Get permissions to use the brightness control extension
 gpasswd --add $USER i2c
@@ -17,4 +21,4 @@ gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$userna
 gsettings set org.gnome.desktop.background picture-uri file:///home/$username/linux-utils/tools/wallpaper.jpg
 
 #Make Discord screen sharing work: uncomment WaylandEnable=false
-nvim /etc/gdm3/custom.conf
+nvim /etc/gdm/custom.conf
