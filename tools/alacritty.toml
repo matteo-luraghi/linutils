@@ -1,6 +1,6 @@
 [window]
-dimensions.columns = 100
-dimensions.lines = 85
+dimensions.columns = 80
+dimensions.lines = 20
 
 padding.x = 0
 padding.y = 0
