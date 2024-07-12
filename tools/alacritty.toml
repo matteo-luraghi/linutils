@@ -1,4 +1,3 @@
-
 [window]
 dimensions.columns = 100
 dimensions.lines = 85
@@ -127,7 +126,7 @@ action = "Copy"
 
 [[keyboard.bindings]]
 key = "Q"
-mods = "Control"
+mods = "Control|Shift"
 action = "Quit"
 
 [[keyboard.bindings]]
@@ -156,7 +155,7 @@ mods = "Control"
 action = "ResetFontSize"
 
 [[keyboard.bindings]]
-key = "E"
+key = "V"
 mods = "Control"
 action = "ToggleViMode"
 
@@ -165,7 +164,6 @@ key = "M"
 mods = "Control"
 action = "Minimize"
 
-# sig kill
 [[keyboard.bindings]]
 key = "C"
 mods = "Control"
