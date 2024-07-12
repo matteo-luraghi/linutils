@@ -2,8 +2,8 @@
 
 # Check if Script is Run as Root
 if [[ $EUID -ne 0 ]]; then
-  echo "You must be a root user to run this script, please run sudo ./install.sh" 2>&1
-  exit 1
+	echo "You must be a root user to run this script, please run sudo ./install.sh" 2>&1
+	exit 1
 fi
 
 #Install basic packages
@@ -12,6 +12,9 @@ dnf install vim python3 btop ffmpeg fzf alacritty tldr neofetch tree ca-certific
 #Setup alacritty
 mkdir ~/.config/alacritty
 cp ~/linux-utils/tools/alacritty.toml ~/.config/alacritty
+
+#Restore minimize and maximize buttons
+gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
 
 #Get permissions to use the brightness control extension
 gpasswd --add $USER i2c
