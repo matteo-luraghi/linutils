@@ -56,6 +56,6 @@ Feel free to fork this repository and submit pull requests if you have any ideas
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/matteo-luraghi/linutils/blob/master/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 Happy coding, and enjoy your perfectly configured Linux system! 🎉
