@@ -6,7 +6,7 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
-#Install docker
+# Install docker
 dockerVersion=docker-desktop-4.25.0-amd64.deb
 modprobe kvm
 install -m 0755 -d /etc/apt/keyrings -y

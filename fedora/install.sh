@@ -6,22 +6,28 @@ if [[ $EUID -ne 0 ]]; then
 	exit 1
 fi
 
-#Install basic packages
-dnf install vim python3 btop ffmpeg fzf alacritty tldr neofetch tree ca-certificates curl gnupg cowsay trash-cli ddcutil -y
+# Allow non-free RPM fusion repo
+dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
-#Setup alacritty
+# Update system
+dnf update -y
+
+# Install basic packages
+dnf install vim python3 btop ffmpeg fzf alacritty discord tldr neofetch tree ca-certificates curl gnupg cowsay trash-cli ddcutil -y
+
+# Setup alacritty
 mkdir ~/.config/alacritty
 cp ~/linux-utils/tools/alacritty.toml ~/.config/alacritty
 
-#Restore minimize and maximize buttons
+# Restore minimize and maximize buttons
 gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
 
-#Get permissions to use the brightness control extension
+# Get permissions to use the brightness control extension
 gpasswd --add $USER i2c
 
-#Change wallpaper
+# Change wallpaper
 gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$username/linux-utils/tools/wallpaper.jpg
 gsettings set org.gnome.desktop.background picture-uri file:///home/$username/linux-utils/tools/wallpaper.jpg
 
-#Make Discord screen sharing work: uncomment WaylandEnable=false
+# Make Discord screen sharing work: uncomment WaylandEnable=false
 nvim /etc/gdm/custom.conf

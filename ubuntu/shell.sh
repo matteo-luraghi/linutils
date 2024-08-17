@@ -6,7 +6,7 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
-#Install custom shell and color scheme
+# Install custom shell and color scheme
 pip3 install --user powerline-status
 sudo apt install -y fonts-powerline
 
@@ -27,7 +27,7 @@ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/i
 # Color Theme
 dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/ < ~/linux-utils/tools/color_theme.dconf
 
-#Copy theme to ZSH folder
+# Copy theme to ZSH folder
 cp ~/linux-utils/tools/matteleo.zsh-theme ~/.oh-my-zsh/themes/
 
 cp .zshrc ~/.zshrc

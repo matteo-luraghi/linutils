@@ -2,6 +2,7 @@
 
 username=$(id -u -n 1000)
 
+# Backup firefox
 cd /home/$username
 tar -jcvf firefox-backup.tar.bz2 .mozilla
 gpg -c firefox-backup.tar.bz2
