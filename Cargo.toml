@@ -1,0 +1,14 @@
+[package]
+name = "linutils"
+version = "0.1.0"
+edition = "2021"
+authors = ["Matteo Luraghi matteoluraghi50@gmail.com"]
+license = "MIT"
+description = ""
+readme = "README.md"
+homepage = "https://github.com/matteo-luraghi/linutils"
+repository = "https://github.com/matteo-luraghi/linutils"
+keywords = ["cli"]
+categories = ["command-line-utilities"]
+
+[dependencies]
