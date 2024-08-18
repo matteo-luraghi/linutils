@@ -20,4 +20,4 @@ wget -O docker.rpm https://desktop.docker.com/linux/main/amd64/docker-desktop-x8
 dnf install docker-desktop.rpm
 
 # Remove installation file
-rm docker-desktop
+rm docker-desktop.rpm

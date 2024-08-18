@@ -25,11 +25,11 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting
 git clone https://github.com/zsh-users/zsh-autosuggestions
 
 # Color Theme
-dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/ <~/linux-utils/tools/color_theme.dconf
+dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/ <~/linutils/tools/color_theme.dconf
 
 #Copy theme to ZSH folder
-cp ~/linux-utils/tools/matteleo.zsh-theme ~/.oh-my-zsh/themes/
+cp ~/linutils/tools/matteleo.zsh-theme ~/.oh-my-zsh/themes/
 
-cp ~/linux-utils/tools/.zshrc ~/.zshrc
+cp ~/linutils/tools/.zshrc ~/.zshrc
 
 chsh -s $(which zsh)
