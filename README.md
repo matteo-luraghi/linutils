@@ -18,7 +18,7 @@ Welcome to Linutils, a Rust-based application that streamlines the setup of a ne
 
 1. Clone the Repository:
 ```bash
-git clone https://github.com/yourusername/linux-configurator.git
+git clone https://github.com/matteo-luraghi/linutils.git
 cd linux-configurator
 ```
 2. Build the Application (ensure you have rust installed):
@@ -27,7 +27,7 @@ cargo build --release
 ```
 3. Run the Application:
 ```bash
-./target/release/linux-configurator
+./target/release/linutils
 ```
 4. Follow the On-Screen Prompts:
 The application will guide you through selecting your distro and configuring your environment.
