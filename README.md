@@ -35,9 +35,8 @@ The application will guide you through selecting your distro and configuring you
 ## 🛠 Customization
 
 You can customize the setup process by editing the configuration file located at config.toml in the project directory. Add or remove software packages, environment variables, or any other setup instructions as needed.
-📂 Project Structure
 
-plaintext
+## 📂 Project Structure
 
     linuitls/
     ├── src/
