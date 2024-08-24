@@ -12,3 +12,4 @@ keywords = ["cli"]
 categories = ["command-line-utilities"]
 
 [dependencies]
+ratatui = "0.28.0"
