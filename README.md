@@ -59,7 +59,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Happy coding, and enjoy your perfectly configured Linux system! 🎉
 
-### Future reference
+## Future reference
 
 How to exec a specific file
 
