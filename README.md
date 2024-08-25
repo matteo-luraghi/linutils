@@ -12,7 +12,7 @@ Welcome to Linutils, a Rust-based application that streamlines the setup of a ne
   - Configure your workspace with Hyprland and Alacritty.
   - Custom environment variables and aliases.
 - Easy Customization: Modify the configuration file to add or remove packages and settings as needed.
-- Fast & Efficient: Built with Rust for performance and reliability.
+- Blazingly fast: Built with Rust for performance and reliability.
 
 ## ⚙️ Installation
 
