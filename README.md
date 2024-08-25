@@ -58,3 +58,11 @@ Feel free to fork this repository and submit pull requests if you have any ideas
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 Happy coding, and enjoy your perfectly configured Linux system! 🎉
+
+### Future reference
+
+How to exec a specific file
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/matteo-luraghi/linutils/master/ubuntu/apps/discord.sh | sudo sh
+```

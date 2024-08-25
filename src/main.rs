@@ -86,6 +86,14 @@ impl<T> StatefulList<T> {
     fn clear_selections(&mut self) {
         self.selected_items.clear();
     }
+
+    // add all items to the selected items
+    fn select_all(&mut self) {
+        self.clear_selections();
+        for (index, _value) in self.items.iter().enumerate() {
+            self.selected_items.push(index);
+        }
+    }
 }
 
 fn exec_command() {
@@ -110,7 +118,7 @@ fn main() -> io::Result<()> {
     let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
 
     // lists init
-    let items = vec![
+    let packages = vec![
         "alacritty".to_string(),
         "neovim".to_string(),
         "hyprland".to_string(),
@@ -120,7 +128,7 @@ fn main() -> io::Result<()> {
         "discord".to_string(),
         "fzf".to_string(),
     ];
-    let mut list = StatefulList::with_items(items);
+    let mut packages_list = StatefulList::with_items(packages);
 
     let distros = vec!["fedora".to_string(), "ubuntu".to_string()];
     let mut distros_list = StatefulList::with_items(distros);
@@ -130,8 +138,8 @@ fn main() -> io::Result<()> {
     // screen drawing
     let mut should_quit = false;
     while !should_quit {
-        terminal.draw(|f| ui(f, &mut list, &mut distros_list))?;
-        should_quit = handle_events(&mut list, &mut distros_list)?;
+        terminal.draw(|f| ui(f, &mut packages_list, &mut distros_list))?;
+        should_quit = handle_events(&mut packages_list, &mut distros_list)?;
     }
 
     disable_raw_mode()?;
@@ -224,13 +232,18 @@ fn handle_events(
                         packages_list.toggle_focus();
                     }
                     _ => {}
-                }
+                },
                 // switch list in focus
                 KeyCode::Tab => {
                     distros_list.toggle_focus();
                     packages_list.toggle_focus();
                     return Ok(false);
                 }
+                // shift + a selects all packages
+                KeyCode::Char('a') => packages_list.select_all(),
+
+                // remove all selections
+                KeyCode::Char('d') => packages_list.clear_selections(),
                 _ => return Ok(false), // default case
             }
         }
@@ -247,13 +260,16 @@ fn ui(frame: &mut Frame, list: &mut StatefulList<String>, distros_list: &mut Sta
     /_____/_/_/ /_/\\__,_/\\__/_/_/____/  
 
 \n
- Use the arrow keys or vim motion keys to navigate the lists
+ Use the arrow keys or vim motion keys (h,j,k,l) to navigate the lists
  Use <Tab> to switch between lists
  Use <Space> to select the highligthted item
- Use <Enter> to confirm your choices";
+ Use <Enter> to confirm your choices
+ Use <a> to select all packages
+ Use <d> to deselect all packages
+ Use <q> to quit";
 
     let [title_area, main_area, status_area] = Layout::vertical([
-        Constraint::Length(15),
+        Constraint::Length(18),
         Constraint::Min(0),
         Constraint::Length(3),
     ])
