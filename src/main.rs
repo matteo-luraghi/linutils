@@ -1,4 +1,3 @@
-use std::env::args;
 use std::io::{self, stdout};
 use std::process::Command;
 
@@ -15,6 +14,15 @@ use ratatui::{
     widgets::{Block, List, ListItem, ListState, Paragraph},
     Frame, Terminal,
 };
+
+fn exec_command() {
+    let output = Command::new("sh")
+        .arg("-c")
+        .arg(format!("yes | cowsay hello")) // repeatedly says yes to every prompt
+        .output()
+        .expect("failed to execute process");
+    println!("{:?}", output)
+}
 
 struct StatefulList<T> {
     items: Vec<T>,
@@ -96,20 +104,6 @@ impl<T> StatefulList<T> {
     }
 }
 
-fn exec_command() {
-    let distro = args().nth(1).expect("Error: no distro selected");
-    println!("{}", distro);
-
-    let script_path = format!("./{}/apps/discord.sh", distro);
-
-    let output = Command::new("sh")
-        .arg("-c")
-        .arg(format!("yes | sudo {}", script_path)) // repeatedly says yes to every prompt
-        .output()
-        .expect("failed to execute process");
-    println!("{:?}", output)
-}
-
 // MAIN
 fn main() -> io::Result<()> {
     // init
@@ -137,9 +131,25 @@ fn main() -> io::Result<()> {
 
     // screen drawing
     let mut should_quit = false;
+    let mut confirm_message = "".to_string();
+
     while !should_quit {
-        terminal.draw(|f| ui(f, &mut packages_list, &mut distros_list))?;
-        should_quit = handle_events(&mut packages_list, &mut distros_list)?;
+        // draw the terminal
+        terminal.draw(|f| {
+            ui(
+                f,
+                &mut packages_list,
+                &mut distros_list,
+                confirm_message.clone(),
+            )
+        })?;
+
+        // read new values
+        (should_quit, confirm_message) = handle_events(
+            &mut packages_list,
+            &mut distros_list,
+            confirm_message.clone(),
+        )?;
     }
 
     disable_raw_mode()?;
@@ -150,13 +160,14 @@ fn main() -> io::Result<()> {
 fn handle_events(
     packages_list: &mut StatefulList<String>,
     distros_list: &mut StatefulList<String>,
-) -> io::Result<bool> {
+    confirm_message: String,
+) -> io::Result<(bool, String)> {
     if event::poll(std::time::Duration::from_millis(50))? {
         if let Event::Key(key) = event::read()? {
             enum ViewLists {
                 Packages,
                 Distros,
-                // Confirm, // to be implemented for the popup confirmation menu
+                Confirm,
             }
 
             // find the list that is currently in focus
@@ -170,7 +181,7 @@ fn handle_events(
                     ViewLists::Distros
                 } else {
                     // default case
-                    ViewLists::Distros
+                    ViewLists::Confirm
                 }
             }
 
@@ -180,30 +191,24 @@ fn handle_events(
 
             match key.code {
                 // quit
-                KeyCode::Char('q') => return Ok(true),
-                // confirm the choices
-                KeyCode::Enter => {
-                    // TODO
-                    // - check for errors in selection of distro
-                    // - open a popup "Confirm y/n"
-                    // - if confirmed exec all the needed bash scripts
-                    return Ok(false);
-                }
+                KeyCode::Char('q') => return Ok((true, "".to_string())),
                 // move down in the list
                 KeyCode::Down | KeyCode::Char('j') => {
                     match active_list {
                         ViewLists::Packages => packages_list.next(),
                         ViewLists::Distros => distros_list.next(),
+                        _ => {}
                     }
-                    return Ok(false);
+                    return Ok((false, confirm_message));
                 }
                 // move up in the list
                 KeyCode::Up | KeyCode::Char('k') => {
                     match active_list {
                         ViewLists::Packages => packages_list.previous(),
                         ViewLists::Distros => distros_list.previous(),
+                        _ => {}
                     }
-                    return Ok(false);
+                    return Ok((false, confirm_message));
                 }
                 // select the current item
                 KeyCode::Char(' ') => {
@@ -214,44 +219,96 @@ fn handle_events(
                             distros_list.clear_selections();
                             distros_list.toggle_selection()
                         }
+                        _ => {}
                     }
-                    return Ok(false);
+                    return Ok((false, confirm_message));
+                }
+                // move horizontally to the left
+                KeyCode::Left | KeyCode::Char('h') => {
+                    match active_list {
+                        ViewLists::Distros => {
+                            distros_list.toggle_focus();
+                            packages_list.toggle_focus();
+                        }
+                        _ => {}
+                    }
+                    return Ok((false, confirm_message));
                 }
                 // move horizontally to the right
-                KeyCode::Char('h') => match active_list {
-                    ViewLists::Distros => {
-                        distros_list.toggle_focus();
-                        packages_list.toggle_focus();
+                KeyCode::Right | KeyCode::Char('l') => {
+                    match active_list {
+                        ViewLists::Packages => {
+                            distros_list.toggle_focus();
+                            packages_list.toggle_focus();
+                        }
+                        _ => {}
                     }
-                    _ => {}
-                },
-                // move horizontally to the left
-                KeyCode::Char('l') => match active_list {
-                    ViewLists::Packages => {
-                        distros_list.toggle_focus();
-                        packages_list.toggle_focus();
-                    }
-                    _ => {}
-                },
+                    return Ok((false, confirm_message));
+                }
                 // switch list in focus
                 KeyCode::Tab => {
                     distros_list.toggle_focus();
                     packages_list.toggle_focus();
-                    return Ok(false);
+                    return Ok((false, confirm_message));
                 }
                 // shift + a selects all packages
-                KeyCode::Char('a') => packages_list.select_all(),
-
+                KeyCode::Char('a') => {
+                    packages_list.select_all();
+                    return Ok((false, confirm_message));
+                }
                 // remove all selections
-                KeyCode::Char('d') => packages_list.clear_selections(),
-                _ => return Ok(false), // default case
+                KeyCode::Char('d') => {
+                    packages_list.clear_selections();
+                    return Ok((false, confirm_message));
+                }
+                // confirm the choices
+                KeyCode::Enter => {
+                    let message: String;
+                    if distros_list.selected_items.is_empty() {
+                        message = "You must select your current distro".to_string();
+                    } else {
+                        message = "Do you want to proceed? y/n".to_string();
+                        // focus the confirm section
+                        match active_list {
+                            ViewLists::Packages => packages_list.toggle_focus(),
+                            ViewLists::Distros => distros_list.toggle_focus(),
+                            _ => {}
+                        }
+                    }
+
+                    return Ok((false, message));
+                }
+                // execute the commands
+                KeyCode::Char('y') => {
+                    match active_list {
+                        ViewLists::Confirm => exec_command(),
+                        _ => {}
+                    }
+                    return Ok((false, confirm_message));
+                }
+                // focus the packages list
+                KeyCode::Char('n') => {
+                    match active_list {
+                        ViewLists::Confirm => packages_list.state.select(Some(0)),
+                        _ => {}
+                    }
+                    // reset the message in the confirm bar
+                    return Ok((false, "".to_string()));
+                }
+                // default case
+                _ => return Ok((false, confirm_message)),
             }
         }
     }
-    return Ok(false);
+    return Ok((false, confirm_message));
 }
 
-fn ui(frame: &mut Frame, list: &mut StatefulList<String>, distros_list: &mut StatefulList<String>) {
+fn ui(
+    frame: &mut Frame,
+    list: &mut StatefulList<String>,
+    distros_list: &mut StatefulList<String>,
+    confirm_message: String,
+) {
     const GREETINGS_TEXT: &str = "
         __    _             __  _ __    
        / /   (_)___  __  __/ /_(_) /____
@@ -282,7 +339,10 @@ fn ui(frame: &mut Frame, list: &mut StatefulList<String>, distros_list: &mut Sta
         Paragraph::new(GREETINGS_TEXT).block(Block::bordered()),
         title_area,
     );
-    frame.render_widget(Block::bordered().title("Confirm"), status_area);
+    frame.render_widget(
+        Paragraph::new(confirm_message).block(Block::bordered().title("Confirm")),
+        status_area,
+    );
 
     const HIGHLIGHTED_STYLE: Style = Style::new().fg(Color::LightGreen).bg(Color::DarkGray);
 
