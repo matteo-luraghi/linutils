@@ -96,10 +96,12 @@ fn exec_command() {
 
 // MAIN
 fn main() -> io::Result<()> {
+    // init
     enable_raw_mode()?;
     let _ = stdout().execute(EnterAlternateScreen);
     let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
 
+    // lists init
     let items = vec![
         "alacritty".to_string(),
         "neovim".to_string(),
@@ -114,12 +116,16 @@ fn main() -> io::Result<()> {
 
     let distros = vec!["fedora".to_string(), "ubuntu".to_string()];
     let mut distros_list = StatefulList::with_items(distros);
+    // initialize the first selected item
+    distros_list.state.select(Some(0));
 
+    // screen drawing
     let mut should_quit = false;
     while !should_quit {
         terminal.draw(|f| ui(f, &mut list, &mut distros_list))?;
         should_quit = handle_events(&mut list, &mut distros_list)?;
     }
+
     disable_raw_mode()?;
     stdout().execute(LeaveAlternateScreen)?;
     return Ok(());
@@ -145,17 +151,42 @@ fn handle_events(
             match key.code {
                 // quit
                 KeyCode::Char('q') => return Ok(true),
-                KeyCode::Down => {
+                // confirm the choices
+                KeyCode::Enter => {
+                    // TODO
+                    // - check for errors in selection of distro
+                    // - open a popup "Confirm y/n"
+                    // - if confirmed exec all the needed bash scripts
+                    return Ok(false);
+                }
+                // move down in the list
+                KeyCode::Down | KeyCode::Char('j') => {
                     active_list.next();
                     return Ok(false);
                 }
-                KeyCode::Up => {
+                // move up in the list
+                KeyCode::Up | KeyCode::Char('k') => {
                     active_list.previous();
                     return Ok(false);
                 }
-                KeyCode::Enter => {
+                // select the current item
+                KeyCode::Char(' ') => {
                     active_list.toggle_selection();
                     return Ok(false);
+                }
+                // move horizontally to the right
+                KeyCode::Char('h') => {
+                    if list.state.selected() == None {
+                        distros_list.toggle_focus();
+                        list.toggle_focus();
+                    }
+                }
+                // move horizontally to the left
+                KeyCode::Char('l') => {
+                    if distros_list.state.selected() == None {
+                        distros_list.toggle_focus();
+                        list.toggle_focus();
+                    }
                 }
                 // switch list in focus
                 KeyCode::Tab => {
@@ -171,8 +202,21 @@ fn handle_events(
 }
 
 fn ui(frame: &mut Frame, list: &mut StatefulList<String>, distros_list: &mut StatefulList<String>) {
+    const GREETINGS_TEXT: &str = "
+        __    _             __  _ __    
+       / /   (_)___  __  __/ /_(_) /____
+      / /   / / __ \\/ / / / __/ / / ___/
+     / /___/ / / / / /_/ / /_/ / (__  ) 
+    /_____/_/_/ /_/\\__,_/\\__/_/_/____/  
+
+\n
+ Use the arrow keys or vim motion keys to navigate the lists
+ Use <Tab> to switch between lists
+ Use <Space> to select the highligthted item
+ Use <Enter> to confirm your choices";
+
     let [title_area, main_area, status_area] = Layout::vertical([
-        Constraint::Length(3),
+        Constraint::Length(15),
         Constraint::Min(0),
         Constraint::Length(3),
     ])
@@ -182,18 +226,20 @@ fn ui(frame: &mut Frame, list: &mut StatefulList<String>, distros_list: &mut Sta
             .areas(main_area);
 
     frame.render_widget(
-        Paragraph::new("LINUTILS").block(Block::bordered()),
+        Paragraph::new(GREETINGS_TEXT).block(Block::bordered()),
         title_area,
     );
-    frame.render_widget(Block::bordered().title("Status Bar"), status_area);
+    frame.render_widget(Block::bordered().title("Confirm"), status_area);
 
-    let highlighted_style: Style = Style::default().fg(Color::LightGreen).bg(Color::DarkGray);
+    const HIGHLIGHTED_STYLE: Style = Style::new().fg(Color::LightGreen).bg(Color::DarkGray);
 
     let commands: Vec<ListItem> = to_list_items(&list.items, list.selected_items.clone());
 
     let commands_widget = List::new(commands)
-        .block(Block::bordered().title("Select the packages to install and configure automatically"))
-        .highlight_style(highlighted_style);
+        .block(
+            Block::bordered().title("Select the packages to install and configure automatically"),
+        )
+        .highlight_style(HIGHLIGHTED_STYLE);
 
     frame.render_stateful_widget(commands_widget, left_area, &mut list.state);
 
@@ -202,7 +248,7 @@ fn ui(frame: &mut Frame, list: &mut StatefulList<String>, distros_list: &mut Sta
 
     let distros_widget = List::new(distros)
         .block(Block::bordered().title("Choose your current distro"))
-        .highlight_style(highlighted_style);
+        .highlight_style(HIGHLIGHTED_STYLE);
 
     frame.render_stateful_widget(distros_widget, right_area, &mut distros_list.state);
 }
