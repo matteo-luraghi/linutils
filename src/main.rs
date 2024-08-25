@@ -60,6 +60,15 @@ impl<T> StatefulList<T> {
         self.state.select(Some(i));
     }
 
+    // set the list as focused or unfocused
+    fn toggle_focus(&mut self) {
+        if self.state.selected() != None {
+            self.state.select(None);
+        } else {
+            self.state.select(Some(0));
+        }
+    }
+
     fn toggle_selection(&mut self) {
         if let Some(i) = self.state.selected() {
             if self.selected_items.contains(&i) {
@@ -92,43 +101,66 @@ fn main() -> io::Result<()> {
     let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
 
     let items = vec![
-        "Item 1".to_string(),
-        "Item 2".to_string(),
-        "Item 3".to_string(),
-        "Item 4".to_string(),
-        "Item 5".to_string(),
-        "Item 6".to_string(),
-        "Item 7".to_string(),
-        "Item 8".to_string(),
-        "Item 9".to_string(),
+        "alacritty".to_string(),
+        "neovim".to_string(),
+        "hyprland".to_string(),
+        "zsh".to_string(),
+        "docker".to_string(),
+        "webeep-sync".to_string(),
+        "discord".to_string(),
+        "fzf".to_string(),
     ];
     let mut list = StatefulList::with_items(items);
 
+    let distros = vec!["fedora".to_string(), "ubuntu".to_string()];
+    let mut distros_list = StatefulList::with_items(distros);
+
     let mut should_quit = false;
     while !should_quit {
-        terminal.draw(|f| ui(f, &mut list))?;
-        should_quit = handle_events(&mut list)?;
+        terminal.draw(|f| ui(f, &mut list, &mut distros_list))?;
+        should_quit = handle_events(&mut list, &mut distros_list)?;
     }
     disable_raw_mode()?;
     stdout().execute(LeaveAlternateScreen)?;
     return Ok(());
 }
 
-fn handle_events(list: &mut StatefulList<String>) -> io::Result<bool> {
+fn handle_events(
+    list: &mut StatefulList<String>,
+    distros_list: &mut StatefulList<String>,
+) -> io::Result<bool> {
     if event::poll(std::time::Duration::from_millis(50))? {
         if let Event::Key(key) = event::read()? {
+            let active_list: &mut StatefulList<String>;
+            let inactive_list: &mut StatefulList<String>;
+
+            if list.state.selected() != None {
+                active_list = list;
+                inactive_list = distros_list;
+            } else {
+                active_list = distros_list;
+                inactive_list = list;
+            };
+
             match key.code {
+                // quit
                 KeyCode::Char('q') => return Ok(true),
                 KeyCode::Down => {
-                    list.next();
+                    active_list.next();
                     return Ok(false);
                 }
                 KeyCode::Up => {
-                    list.previous();
+                    active_list.previous();
                     return Ok(false);
                 }
                 KeyCode::Enter => {
-                    list.toggle_selection();
+                    active_list.toggle_selection();
+                    return Ok(false);
+                }
+                // switch list in focus
+                KeyCode::Tab => {
+                    active_list.toggle_focus();
+                    inactive_list.toggle_focus();
                     return Ok(false);
                 }
                 _ => return Ok(false), // default case
@@ -138,7 +170,7 @@ fn handle_events(list: &mut StatefulList<String>) -> io::Result<bool> {
     return Ok(false);
 }
 
-fn ui(frame: &mut Frame, list: &mut StatefulList<String>) {
+fn ui(frame: &mut Frame, list: &mut StatefulList<String>, distros_list: &mut StatefulList<String>) {
     let [title_area, main_area, status_area] = Layout::vertical([
         Constraint::Length(3),
         Constraint::Min(0),
@@ -155,31 +187,43 @@ fn ui(frame: &mut Frame, list: &mut StatefulList<String>) {
     );
     frame.render_widget(Block::bordered().title("Status Bar"), status_area);
 
-    let items: Vec<ListItem> = list
-        .items
+    let highlighted_style: Style = Style::default().fg(Color::LightGreen).bg(Color::DarkGray);
+
+    let commands: Vec<ListItem> = to_list_items(&list.items, list.selected_items.clone());
+
+    let commands_widget = List::new(commands)
+        .block(Block::bordered().title("Select the packages to install and configure automatically"))
+        .highlight_style(highlighted_style);
+
+    frame.render_stateful_widget(commands_widget, left_area, &mut list.state);
+
+    let distros: Vec<ListItem> =
+        to_list_items(&distros_list.items, distros_list.selected_items.clone());
+
+    let distros_widget = List::new(distros)
+        .block(Block::bordered().title("Choose your current distro"))
+        .highlight_style(highlighted_style);
+
+    frame.render_stateful_widget(distros_widget, right_area, &mut distros_list.state);
+}
+
+fn to_list_items(items: &[String], selected_items: Vec<usize>) -> Vec<ListItem> {
+    items
         .iter()
         .enumerate()
         .map(|(i, item)| {
-            let checkbox = if list.selected_items.contains(&i) {
-                "[x]"
+            let checkbox = if selected_items.contains(&i) {
+                "[x] "
             } else {
-                "[ ]"
+                "[ ] "
             };
             let content = format!("{}{}", checkbox, item);
-            let style = if list.selected_items.contains(&i) {
+            let style = if selected_items.contains(&i) {
                 Style::default().fg(Color::LightGreen)
             } else {
                 Style::default()
             };
             ListItem::new(Span::from(content)).style(style)
         })
-        .collect();
-
-    let list_widget = List::new(items)
-        .block(Block::bordered().title("Left"))
-        .highlight_style(Style::default().fg(Color::LightGreen).bg(Color::Black));
-
-    frame.render_stateful_widget(list_widget, left_area, &mut list.state);
-
-    frame.render_widget(Block::bordered().title("Right"), right_area);
+        .collect()
 }
