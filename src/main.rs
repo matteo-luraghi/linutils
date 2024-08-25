@@ -69,14 +69,22 @@ impl<T> StatefulList<T> {
         }
     }
 
+    // add or remove the current item to the selected items
     fn toggle_selection(&mut self) {
         if let Some(i) = self.state.selected() {
             if self.selected_items.contains(&i) {
+                // remove the previously selected item from the list
                 self.selected_items.retain(|&x| x != i);
             } else {
+                // add the selected item to the list
                 self.selected_items.push(i);
             }
         }
+    }
+
+    // remove all the selected items
+    fn clear_selections(&mut self) {
+        self.selected_items.clear();
     }
 }
 
@@ -132,21 +140,35 @@ fn main() -> io::Result<()> {
 }
 
 fn handle_events(
-    list: &mut StatefulList<String>,
+    packages_list: &mut StatefulList<String>,
     distros_list: &mut StatefulList<String>,
 ) -> io::Result<bool> {
     if event::poll(std::time::Duration::from_millis(50))? {
         if let Event::Key(key) = event::read()? {
-            let active_list: &mut StatefulList<String>;
-            let inactive_list: &mut StatefulList<String>;
+            enum ViewLists {
+                Packages,
+                Distros,
+                // Confirm, // to be implemented for the popup confirmation menu
+            }
 
-            if list.state.selected() != None {
-                active_list = list;
-                inactive_list = distros_list;
-            } else {
-                active_list = distros_list;
-                inactive_list = list;
-            };
+            // find the list that is currently in focus
+            fn find_active(
+                packages_list: &mut StatefulList<String>,
+                distros_list: &mut StatefulList<String>,
+            ) -> ViewLists {
+                if packages_list.state.selected().is_some() {
+                    ViewLists::Packages
+                } else if distros_list.state.selected().is_some() {
+                    ViewLists::Distros
+                } else {
+                    // default case
+                    ViewLists::Distros
+                }
+            }
+
+            let active_list: ViewLists;
+
+            active_list = find_active(packages_list, distros_list);
 
             match key.code {
                 // quit
@@ -161,37 +183,52 @@ fn handle_events(
                 }
                 // move down in the list
                 KeyCode::Down | KeyCode::Char('j') => {
-                    active_list.next();
+                    match active_list {
+                        ViewLists::Packages => packages_list.next(),
+                        ViewLists::Distros => distros_list.next(),
+                    }
                     return Ok(false);
                 }
                 // move up in the list
                 KeyCode::Up | KeyCode::Char('k') => {
-                    active_list.previous();
+                    match active_list {
+                        ViewLists::Packages => packages_list.previous(),
+                        ViewLists::Distros => distros_list.previous(),
+                    }
                     return Ok(false);
                 }
                 // select the current item
                 KeyCode::Char(' ') => {
-                    active_list.toggle_selection();
+                    match active_list {
+                        ViewLists::Packages => packages_list.toggle_selection(),
+                        ViewLists::Distros => {
+                            // only one selection at a time
+                            distros_list.clear_selections();
+                            distros_list.toggle_selection()
+                        }
+                    }
                     return Ok(false);
                 }
                 // move horizontally to the right
-                KeyCode::Char('h') => {
-                    if list.state.selected() == None {
+                KeyCode::Char('h') => match active_list {
+                    ViewLists::Distros => {
                         distros_list.toggle_focus();
-                        list.toggle_focus();
+                        packages_list.toggle_focus();
                     }
-                }
+                    _ => {}
+                },
                 // move horizontally to the left
-                KeyCode::Char('l') => {
-                    if distros_list.state.selected() == None {
+                KeyCode::Char('l') => match active_list {
+                    ViewLists::Packages => {
                         distros_list.toggle_focus();
-                        list.toggle_focus();
+                        packages_list.toggle_focus();
                     }
+                    _ => {}
                 }
                 // switch list in focus
                 KeyCode::Tab => {
-                    active_list.toggle_focus();
-                    inactive_list.toggle_focus();
+                    distros_list.toggle_focus();
+                    packages_list.toggle_focus();
                     return Ok(false);
                 }
                 _ => return Ok(false), // default case
