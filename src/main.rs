@@ -62,7 +62,6 @@ impl<T> StatefulList<T> {
                     i - 1
                 }
             }
-
             None => 0,
         };
         self.state.select(Some(i));
@@ -70,7 +69,7 @@ impl<T> StatefulList<T> {
 
     // set the list as focused or unfocused
     fn toggle_focus(&mut self) {
-        if self.state.selected() != None {
+        if self.state.selected().is_some() {
             self.state.select(None);
         } else {
             self.state.select(Some(0));
@@ -305,7 +304,7 @@ fn handle_events(
 
 fn ui(
     frame: &mut Frame,
-    list: &mut StatefulList<String>,
+    packages_list: &mut StatefulList<String>,
     distros_list: &mut StatefulList<String>,
     confirm_message: String,
 ) {
@@ -346,7 +345,7 @@ fn ui(
 
     const HIGHLIGHTED_STYLE: Style = Style::new().fg(Color::LightGreen).bg(Color::DarkGray);
 
-    let commands: Vec<ListItem> = to_list_items(&list.items, list.selected_items.clone());
+    let commands: Vec<ListItem> = to_list_items(&packages_list.items, packages_list.selected_items.clone());
 
     let commands_widget = List::new(commands)
         .block(
@@ -354,7 +353,7 @@ fn ui(
         )
         .highlight_style(HIGHLIGHTED_STYLE);
 
-    frame.render_stateful_widget(commands_widget, left_area, &mut list.state);
+    frame.render_stateful_widget(commands_widget, left_area, &mut packages_list.state);
 
     let distros: Vec<ListItem> =
         to_list_items(&distros_list.items, distros_list.selected_items.clone());
