@@ -13,7 +13,7 @@ dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-rel
 dnf update -y
 
 # Install basic packages
-dnf install vim python3 btop ffmpeg fzf alacritty discord tldr neofetch tree ca-certificates curl gnupg cowsay trash-cli ddcutil -y
+dnf install vim python3 golang btop ffmpeg fzf alacritty discord tldr neofetch tree ca-certificates curl gnupg cowsay trash-cli ddcutil -y
 
 # Setup alacritty
 mkdir ~/.config/alacritty
