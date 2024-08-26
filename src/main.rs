@@ -1,5 +1,5 @@
 use std::io::{self, stdout};
-use std::process::Command;
+use std::process::{Command, Stdio};
 
 use ratatui::{
     backend::CrosstermBackend,
@@ -15,13 +15,31 @@ use ratatui::{
     Frame, Terminal,
 };
 
-fn exec_command() {
-    let output = Command::new("sh")
+fn exec_script(path: &str) {
+    let script_name_optional = path.split("/").last();
+
+    let script_name = match script_name_optional {
+        Some(name) => name,
+        None => {
+            println!("Failed to extract script name");
+            return;
+        }
+    };
+
+    let mut script = Command::new("sh");
+    let output = script
         .arg("-c")
-        .arg(format!("yes | cowsay hello")) // repeatedly says yes to every prompt
+        .arg(format!("./{}", path))
+        .stdout(Stdio::piped())
         .output()
-        .expect("failed to execute process");
-    println!("{:?}", output)
+        .expect(&format!("Error executing script {}", script_name));
+
+    if script.status().expect("Failed to execute script").success() {
+        println!("Command executed correctly");
+    } else {
+        println!("Error executing script {}", script_name);
+        println!("{:?}", output);
+    }
 }
 
 struct StatefulList<T> {
@@ -280,7 +298,7 @@ fn handle_events(
                 // execute the commands
                 KeyCode::Char('y') => {
                     match active_list {
-                        ViewLists::Confirm => exec_command(),
+                        ViewLists::Confirm => exec_script("src/commands/test.sh"),
                         _ => {}
                     }
                     return Ok((false, confirm_message));
@@ -345,15 +363,16 @@ fn ui(
 
     const HIGHLIGHTED_STYLE: Style = Style::new().fg(Color::LightGreen).bg(Color::DarkGray);
 
-    let commands: Vec<ListItem> = to_list_items(&packages_list.items, packages_list.selected_items.clone());
+    let packages: Vec<ListItem> =
+        to_list_items(&packages_list.items, packages_list.selected_items.clone());
 
-    let commands_widget = List::new(commands)
+    let packages_widget = List::new(packages)
         .block(
             Block::bordered().title("Select the packages to install and configure automatically"),
         )
         .highlight_style(HIGHLIGHTED_STYLE);
 
-    frame.render_stateful_widget(commands_widget, left_area, &mut packages_list.state);
+    frame.render_stateful_widget(packages_widget, left_area, &mut packages_list.state);
 
     let distros: Vec<ListItem> =
         to_list_items(&distros_list.items, distros_list.selected_items.clone());
