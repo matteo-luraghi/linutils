@@ -30,6 +30,7 @@ fn main() -> io::Result<()> {
         "webeep-sync".to_string(),
         "discord".to_string(),
         "fzf".to_string(),
+        "nerdfont".to_string(),
     ];
     let mut packages_list = StatefulList::with_items(packages);
 

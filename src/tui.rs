@@ -1,4 +1,4 @@
-use crate::processing::exec_script;
+use crate::processing::run_all;
 use ratatui::{
     crossterm::event::{self, Event, KeyCode},
     layout::{Constraint, Layout},
@@ -216,7 +216,10 @@ pub fn handle_events(
                 // execute the commands
                 KeyCode::Char('y') => {
                     match active_list {
-                        ViewLists::Confirm => exec_script("src/commands/test.sh"),
+                        // TODO: get only the selected scripts to run
+                        ViewLists::Confirm => {
+                            let _ = run_all(packages_list.items.clone());
+                        }
                         _ => {}
                     }
                     return Ok((false, confirm_message));
@@ -285,9 +288,7 @@ pub fn ui(
         to_list_items(&packages_list.items, packages_list.selected_items.clone());
 
     let packages_widget = List::new(packages)
-        .block(
-            Block::bordered().title("Select the packages to install and configure automatically"),
-        )
+        .block(Block::bordered().title("Select what to install and setup"))
         .highlight_style(HIGHLIGHTED_STYLE);
 
     frame.render_stateful_widget(packages_widget, left_area, &mut packages_list.state);
