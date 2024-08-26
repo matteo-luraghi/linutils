@@ -20,7 +20,7 @@ fn exec_script(path: String) -> Result<String, String> {
         // do not print the command's output on stdout
         .stdout(Stdio::piped())
         .output()
-        .expect_err(&format!("Error executing script {}", script_name));
+        .expect(&format!("Error executing script {}", script_name));
 
     if script.status().expect("Failed to execute script").success() {
         return Ok(format!("Script {} executed correctly", script_name));
