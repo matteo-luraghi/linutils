@@ -1,26 +1,20 @@
 mod processing;
 mod tui;
 
-use crate::tui::{handle_events, ui, StatefulList};
-use ratatui::Terminal;
+use crate::tui::{StatefulList, Ui};
+use ratatui::{backend::CrosstermBackend, Terminal};
 use serde::Deserialize;
 use std::fs;
-use std::io::{self, stdout};
+use std::io::{self};
 
-use ratatui::{
-    backend::CrosstermBackend,
-    crossterm::{
-        terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
-        ExecutableCommand,
-    },
-};
-
+/// Config arguments
 #[derive(Deserialize, Debug)]
 struct Config {
     packages: Vec<String>,
     distros: Vec<String>,
 }
 
+/// Load the config.toml file into a Config object
 fn load_config(file_path: &str) -> Config {
     let config_content = fs::read_to_string(file_path).expect("Failed to read config file");
 
@@ -30,44 +24,42 @@ fn load_config(file_path: &str) -> Config {
 // MAIN
 fn main() -> io::Result<()> {
     let config = load_config("./src/config.toml");
-    // terminal init
-    enable_raw_mode()?;
-    let _ = stdout().execute(EnterAlternateScreen);
-    let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
-
     // lists init
     let packages = config.packages;
-    let mut packages_list = StatefulList::with_items(packages);
-
     let distros = config.distros;
-    let mut distros_list = StatefulList::with_items(distros);
-    // initialize the first selected item
-    distros_list.initialize();
 
-    // screen drawing
+    let packages_list = StatefulList::with_items(packages);
+    let distros_list = StatefulList::with_items(distros);
+
+    let mut ui = Ui {
+        packages_list,
+        distros_list,
+    };
+
+    // initialize the ui
+    match ui.initialize() {
+        Ok(()) => {},
+        Err(error) => return Err(error),
+    }
+
+    let mut terminal = Terminal::new(CrosstermBackend::new(io::stdout()))?;
     let mut should_quit = false;
     let mut confirm_message = "".to_string();
 
+    // screen drawing
     while !should_quit {
         // draw the terminal
-        terminal.draw(|f| {
-            ui(
-                f,
-                &mut packages_list,
-                &mut distros_list,
-                confirm_message.clone(),
-            )
-        })?;
+        terminal.draw(|f| ui.selection_ui(f, confirm_message.clone()))?;
 
         // read new values
-        (should_quit, confirm_message) = handle_events(
-            &mut packages_list,
-            &mut distros_list,
-            confirm_message.clone(),
-        )?;
+        (should_quit, confirm_message) = ui.handle_selection_events(confirm_message.clone())?;
     }
 
-    disable_raw_mode()?;
-    stdout().execute(LeaveAlternateScreen)?;
+    // close the ui
+    match ui.exit() {
+        Ok(()) => {},
+        Err(error) => {return Err(error)},
+    }
+
     return Ok(());
 }

@@ -3,6 +3,7 @@ use std::{
     thread,
 };
 
+/// Run a script from its path
 fn exec_script(path: String) -> Result<String, String> {
     let script_name_optional = path.split("/").last();
 
@@ -32,6 +33,7 @@ fn exec_script(path: String) -> Result<String, String> {
     }
 }
 
+/// Run all scripts in a Vector each on a separate thread
 pub fn run_all(paths: Vec<String>) -> Vec<Result<String, String>> {
     // save each thread's handle in a vector
     let mut handles = vec![];
@@ -55,6 +57,7 @@ pub fn run_all(paths: Vec<String>) -> Vec<Result<String, String>> {
     results
 }
 
+/// Test the run_all function with a test script and an illegal path
 #[test]
 fn test_run_all() {
     let packages = vec!["alacritty".to_string(), "src/commands/test.sh".to_string()];
