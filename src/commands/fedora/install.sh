@@ -17,7 +17,7 @@ dnf install vim python3 golang btop ffmpeg fzf alacritty discord tldr neofetch t
 
 # Setup alacritty
 mkdir ~/.config/alacritty
-cp ~/linutils/tools/alacritty.toml ~/.config/alacritty
+cp ~/linutils/src/utils/alacritty.toml ~/.config/alacritty
 
 # Restore minimize and maximize buttons
 gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
@@ -26,8 +26,8 @@ gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,m
 gpasswd --add $USER i2c
 
 # Change wallpaper
-gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$username/linutils/tools/wallpaper.jpg
-gsettings set org.gnome.desktop.background picture-uri file:///home/$username/linutils/tools/wallpaper.jpg
+gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$username/linutils/src/utils/wallpaper.jpg
+gsettings set org.gnome.desktop.background picture-uri file:///home/$username/linutils/src/utils/wallpaper.jpg
 
 # Make Discord screen sharing work: uncomment WaylandEnable=false
-nvim /etc/gdm/custom.conf
+sed -i '/^#WaylandEnable=false/s/^#//' /etc/gdm/custom.conf

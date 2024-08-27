@@ -1,0 +1,23 @@
+# Configuration file
+
+# Add your own packages here
+# then add an install script in the /commands directory
+packages = [
+  "alacritty",
+  "neovim",
+  "hyprland",
+  "zsh",
+  "docker",
+  "webeep-sync",
+  "discord",
+  "fzf",
+  "nerdfont",
+]
+
+# Add your own distro here
+# then add a directory in the /commands directory
+# with all the install scripts
+distros = [
+  "fedora",
+  "ubuntu",
+]

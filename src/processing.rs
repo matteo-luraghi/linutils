@@ -16,7 +16,7 @@ fn exec_script(path: String) -> Result<String, String> {
     let mut script = Command::new("sh");
     let output = script
         .arg("-c")
-        .arg(format!("./{}", path))
+        .arg(format!("sudo ./{}", path))
         // do not print the command's output on stdout
         .stdout(Stdio::piped())
         .output()
@@ -59,7 +59,7 @@ pub fn run_all(paths: Vec<String>) -> Vec<Result<String, String>> {
 fn test_run_all() {
     let packages = vec!["alacritty".to_string(), "src/commands/test.sh".to_string()];
     let expected_output = vec![
-    Err("Error executing script alacritty\nOutput { status: ExitStatus(unix_wait_status(32512)), stdout: \"\", stderr: \"sh: 1: ./alacritty: not found\\n\" }".to_string()),
+    Err("Error executing script alacritty\nOutput { status: ExitStatus(unix_wait_status(256)), stdout: \"\", stderr: \"sudo: ./alacritty: command not found\\n\" }".to_string()),
     Ok("Script test.sh executed correctly".to_string())];
 
     let results = run_all(packages);

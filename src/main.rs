@@ -3,6 +3,8 @@ mod tui;
 
 use crate::tui::{handle_events, ui, StatefulList};
 use ratatui::Terminal;
+use serde::Deserialize;
+use std::fs;
 use std::io::{self, stdout};
 
 use ratatui::{
@@ -13,28 +15,31 @@ use ratatui::{
     },
 };
 
+#[derive(Deserialize, Debug)]
+struct Config {
+    packages: Vec<String>,
+    distros: Vec<String>,
+}
+
+fn load_config(file_path: &str) -> Config {
+    let config_content = fs::read_to_string(file_path).expect("Failed to read config file");
+
+    toml::from_str(&config_content).expect("Failed to parse config file")
+}
+
 // MAIN
 fn main() -> io::Result<()> {
-    // init
+    let config = load_config("./src/config.toml");
+    // terminal init
     enable_raw_mode()?;
     let _ = stdout().execute(EnterAlternateScreen);
     let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
 
     // lists init
-    let packages = vec![
-        "alacritty".to_string(),
-        "neovim".to_string(),
-        "hyprland".to_string(),
-        "zsh".to_string(),
-        "docker".to_string(),
-        "webeep-sync".to_string(),
-        "discord".to_string(),
-        "fzf".to_string(),
-        "nerdfont".to_string(),
-    ];
+    let packages = config.packages;
     let mut packages_list = StatefulList::with_items(packages);
 
-    let distros = vec!["fedora".to_string(), "ubuntu".to_string()];
+    let distros = config.distros;
     let mut distros_list = StatefulList::with_items(distros);
     // initialize the first selected item
     distros_list.initialize();

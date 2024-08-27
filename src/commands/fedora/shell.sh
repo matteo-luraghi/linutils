@@ -11,7 +11,7 @@ pip3 install --user powerline-status
 
 # Install Patched Font
 mkdir ~/.fonts
-sudo cp -a ~/linux-utils/tools/fonts/. ~/.fonts/
+sudo cp -a ~/linux-utils/src/utils/fonts/. ~/.fonts/
 fc-cache -vf ~/.fonts/
 
 # Install ZSH
@@ -25,11 +25,11 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting
 git clone https://github.com/zsh-users/zsh-autosuggestions
 
 # Color Theme
-dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/ <~/linutils/tools/color_theme.dconf
+dconf load /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/ <~/linutils/src/utils/color_theme.dconf
 
 #Copy theme to ZSH folder
-cp ~/linutils/tools/matteleo.zsh-theme ~/.oh-my-zsh/themes/
+cp ~/linutils/src/utils/matteleo.zsh-theme ~/.oh-my-zsh/themes/
 
-cp ~/linutils/tools/.zshrc ~/.zshrc
+cp ~/linutils/src/utils/.zshrc ~/.zshrc
 
 chsh -s $(which zsh)

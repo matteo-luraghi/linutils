@@ -10,3 +10,6 @@ fi
 wget -O discord.deb "https://discord.com/api/download/stable?platform=linux&format=deb"
 nala install ./discord.deb -y
 rm -r discord.deb
+
+# Make Discord screen sharing work: uncomment WaylandEnable=false
+sed -i '/^#WaylandEnable=false/s/^#//' /etc/gdm/custom.conf

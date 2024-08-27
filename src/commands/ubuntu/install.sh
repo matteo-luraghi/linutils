@@ -54,11 +54,6 @@ echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codenam
 cd $builddir
 nala install build-essential vim python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay trash-cli ddcutil -y
 
-# Install Discord
-wget -O discord.deb "https://discord.com/api/download/stable?platform=linux&format=deb"
-nala install ./discord.deb -y
-rm -r discord.deb
-
 # Get permissions to use the brightness control extension
 gpasswd --add $USER i2c
 
@@ -67,13 +62,10 @@ cd $builddir
 curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
 chmod u+x nvim.appimage
 mv nvim.appimage /usr/local/bin/nvim
-git clone https://github.com/AstroNvim/AstroNvim ~/.config/nvim
-git clone https://github.com/matteo-luraghi/astro-nvimsetup ~/.config/nvim/lua/user
+mkdir ~/.config/nvim
+git clone https://github.com/matteo-luraghi/nvim ~/.config/nvim/
 
 # Change Wallpaper
 cd $builddir
-gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$username/linutils/tools/wallpaper.jpg
-gsettings set org.gnome.desktop.background picture-uri file:///home/$username/linutils/tools/wallpaper.jpg
-
-# Make Discord screen sharing work: uncomment WaylandEnable=false
-nvim /etc/gdm3/custom.conf
+gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$username/linutils/src/utils/wallpaper.jpg
+gsettings set org.gnome.desktop.background picture-uri file:///home/$username/linutils/src/utils/wallpaper.jpg
