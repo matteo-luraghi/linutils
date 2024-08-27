@@ -1,28 +1,28 @@
 use crate::processing::run_all;
-use ratatui::crossterm::{
-    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
-    ExecutableCommand,
-};
 use ratatui::{
-    crossterm::event::{self, Event, KeyCode},
+    crossterm::{
+        event::{self, Event, KeyCode, KeyModifiers},
+        terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+        ExecutableCommand,
+    },
     layout::{Constraint, Layout},
     style::{Color, Style},
-    text::Span,
+    text::{Span, Text},
     widgets::{Block, List, ListItem, ListState, Paragraph},
     Frame,
 };
 use std::io;
 
 /// Selectable List of Objects
-pub struct StatefulList<T> {
-    items: Vec<T>,
+pub struct StatefulList {
+    items: Vec<String>,
     state: ListState,
     selected_items: Vec<usize>,
 }
 
-impl<T> StatefulList<T> {
+impl StatefulList {
     /// Create a new StatefulList from a Vector
-    pub fn with_items(items: Vec<T>) -> StatefulList<T> {
+    pub fn with_items(items: Vec<String>) -> StatefulList {
         StatefulList {
             items,
             state: ListState::default(),
@@ -35,8 +35,17 @@ impl<T> StatefulList<T> {
         self.state.select(Some(0));
     }
 
+    /// Get the selected items of the list
+    pub fn get_selected_items(&mut self) -> Vec<String> {
+        self.selected_items
+            .clone()
+            .into_iter()
+            .map(|index| self.items[index].clone())
+            .collect()
+    }
+
     /// Select the next item
-    fn next(&mut self) {
+    pub fn next(&mut self) {
         let i = match self.state.selected() {
             Some(i) => {
                 if i >= self.items.len() - 1 {
@@ -51,7 +60,7 @@ impl<T> StatefulList<T> {
     }
 
     /// Select the previous item
-    fn previous(&mut self) {
+    pub fn previous(&mut self) {
         let i = match self.state.selected() {
             Some(i) => {
                 if i == 0 {
@@ -66,7 +75,7 @@ impl<T> StatefulList<T> {
     }
 
     /// Set the list as focused or unfocused
-    fn toggle_focus(&mut self) {
+    pub fn toggle_focus(&mut self) {
         if self.state.selected().is_some() {
             self.state.select(None);
         } else {
@@ -75,7 +84,7 @@ impl<T> StatefulList<T> {
     }
 
     /// Add or remove the current item to the selected items
-    fn toggle_selection(&mut self) {
+    pub fn toggle_selection(&mut self) {
         if let Some(i) = self.state.selected() {
             if self.selected_items.contains(&i) {
                 // remove the previously selected item from the list
@@ -88,12 +97,12 @@ impl<T> StatefulList<T> {
     }
 
     /// Remove all the selected items
-    fn clear_selections(&mut self) {
+    pub fn clear_selections(&mut self) {
         self.selected_items.clear();
     }
 
     /// Add all items to the selected items
-    fn select_all(&mut self) {
+    pub fn select_all(&mut self) {
         self.clear_selections();
         for (index, _value) in self.items.iter().enumerate() {
             self.selected_items.push(index);
@@ -108,10 +117,17 @@ enum ViewLists {
     Confirm,
 }
 
+pub struct PackageItem {
+    name: String,
+    wheel: char,
+    done_installing: bool,
+}
+
 /// Ui
 pub struct Ui {
-    pub packages_list: StatefulList<String>,
-    pub distros_list: StatefulList<String>,
+    pub packages_list: StatefulList,
+    pub distros_list: StatefulList,
+    pub packages_items_list: Vec<PackageItem>,
 }
 
 impl Ui {
@@ -131,6 +147,18 @@ impl Ui {
         disable_raw_mode()?;
         io::stdout().execute(LeaveAlternateScreen)?;
         Ok(())
+    }
+
+    /// Set the packages to install
+    pub fn set_packages_items_list(&mut self, selected_packages: &Vec<String>) {
+        self.packages_items_list = selected_packages
+            .into_iter()
+            .map(|p| PackageItem {
+                name: p.to_string(),
+                wheel: '|',
+                done_installing: false,
+            })
+            .collect();
     }
 
     //--------------------------------------------------SELECTION STATE---------------------------
@@ -244,7 +272,8 @@ impl Ui {
                             }
                             _ => {}
                         }
-                        return Ok((false, confirm_message));
+                        // return true to exit selection loop
+                        return Ok((true, confirm_message));
                     }
                     // focus the packages list
                     KeyCode::Char('n') => {
@@ -325,6 +354,49 @@ impl Ui {
         frame.render_stateful_widget(distros_widget, right_area, &mut self.distros_list.state);
     }
 
+    //---------------------------------------------PROCESSING STATE------------------------------
+
+    /// Handle user's commands in the processing state
+    pub fn handle_processing_events(&mut self) -> io::Result<bool> {
+        if event::poll(std::time::Duration::from_millis(50))? {
+            if let Event::Key(key) = event::read()? {
+                match key.code {
+                    // quit if CTRL+C is pressed
+                    KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => {
+                        return Ok(true)
+                    }
+                    _ => {}
+                }
+            }
+        }
+        Ok(false)
+    }
+
+    /// Draw the Ui in the processing state
+    pub fn processing_ui(&mut self, frame: &mut Frame) {
+        let mut symbol: char = '|';
+
+        let list_items: Vec<ListItem> = self
+            .packages_items_list
+            .iter_mut()
+            .map(|item| {
+                symbol = if item.done_installing {
+                    '✔'
+                } else {
+                    Ui::get_spinning_wheel(item.wheel)
+                };
+                let content = Text::from(format!("{} {}", symbol, item.name));
+                // update the item wheel symbol
+                item.wheel = symbol;
+                ListItem::new(content)
+            })
+            .collect();
+
+        let list = List::new(list_items);
+
+        frame.render_widget(list, frame.area());
+    }
+
     //---------------------------------------------UTILITY FUNCTIONS------------------------------
 
     /// Find the list that is currently in focus
@@ -359,5 +431,36 @@ impl Ui {
                 ListItem::new(Span::from(content)).style(style)
             })
             .collect()
+    }
+
+    /// Get the spinning wheel character based on the current time
+    fn get_spinning_wheel(previous: char) -> char {
+        let spinner = ['|', '/', '-', '\\'];
+        let pos = spinner.iter().position(|&x| x == previous);
+        let next_pos = match pos {
+            Some(i) => (i + 1) % spinner.len(),
+            None => 0,
+        };
+
+        spinner[next_pos]
+    }
+}
+
+#[test]
+fn test_get_spinning_wheel() {
+    let inputs = ['|', '/', '-', '\\'];
+    let mut outputs: Vec<char> = vec![];
+
+    for input in inputs {
+        let output = Ui::get_spinning_wheel(input);
+        outputs.push(output);
+    }
+
+    let expected_outputs = ['/', '-', '\\', '|'];
+
+    let mut i = 0;
+    for output in outputs {
+        assert_eq!(output, expected_outputs[i]);
+        i += 1;
     }
 }

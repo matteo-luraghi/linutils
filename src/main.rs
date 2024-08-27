@@ -2,6 +2,8 @@ mod processing;
 mod tui;
 
 use crate::tui::{StatefulList, Ui};
+use ratatui::crossterm::execute;
+use ratatui::crossterm::terminal::{Clear, ClearType};
 use ratatui::{backend::CrosstermBackend, Terminal};
 use serde::Deserialize;
 use std::fs;
@@ -34,6 +36,7 @@ fn main() -> io::Result<()> {
     let mut ui = Ui {
         packages_list,
         distros_list,
+        packages_items_list: vec![],
     };
 
     // initialize the ui
@@ -46,6 +49,7 @@ fn main() -> io::Result<()> {
     let mut should_quit = false;
     let mut confirm_message = "".to_string();
 
+    //------------------SELECTION STATE--------------
     // screen drawing
     while !should_quit {
         // draw the terminal
@@ -53,6 +57,23 @@ fn main() -> io::Result<()> {
 
         // read new values
         (should_quit, confirm_message) = ui.handle_selection_events(confirm_message.clone())?;
+    }
+
+    // set the selected packages in the ui
+    let selected_packages = ui.packages_list.get_selected_items();
+    ui.set_packages_items_list(&selected_packages);
+
+    //-----------------PROCESSING STATE--------------
+    // clear the screen
+    execute!(terminal.backend_mut(), Clear(ClearType::All))?;
+    should_quit = false;
+
+    while !should_quit {
+        // draw the terminal
+        terminal.draw(|f| ui.processing_ui(f))?;
+
+        // read the new value
+        should_quit = ui.handle_processing_events()?;
     }
 
     // close the ui
