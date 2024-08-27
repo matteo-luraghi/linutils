@@ -10,6 +10,3 @@ wget https://go.dev/dl/$goVersion
 chmod u+x $goVersion
 tar -C /usr/local -xzf $goVersion
 rm $goVersion
-
-# Install Rust
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh

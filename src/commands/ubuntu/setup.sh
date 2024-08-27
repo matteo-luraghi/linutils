@@ -2,7 +2,7 @@
 
 # Check if Script is Run as Root
 if [[ $EUID -ne 0 ]]; then
-  echo "You must be a root user to run this script, please run sudo ./install.sh" 2>&1
+  echo "You must be a root user to run this script, please run sudo ./setup.sh" 2>&1
   exit 1
 fi
 
@@ -56,14 +56,6 @@ nala install build-essential vim python3 btop ffmpeg firefox fzf tldr neofetch t
 
 # Get permissions to use the brightness control extension
 gpasswd --add $USER i2c
-
-# Install and configure nvim
-cd $builddir
-curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-chmod u+x nvim.appimage
-mv nvim.appimage /usr/local/bin/nvim
-mkdir ~/.config/nvim
-git clone https://github.com/matteo-luraghi/nvim ~/.config/nvim/
 
 # Change Wallpaper
 cd $builddir

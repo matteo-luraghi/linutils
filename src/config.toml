@@ -10,7 +10,6 @@ packages = [
   "docker",
   "webeep-sync",
   "discord",
-  "fzf",
   "nerdfont",
 ]
 
