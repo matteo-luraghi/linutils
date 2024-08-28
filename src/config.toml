@@ -11,6 +11,8 @@ packages = [
   "webeep-sync",
   "discord",
   "nerdfont",
+  "src/commands/test",
+  "src/commands/test2",
 ]
 
 # Add your own distro here

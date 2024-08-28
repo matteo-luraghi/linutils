@@ -11,7 +11,7 @@ use ratatui::{
     widgets::{Block, List, ListItem, ListState, Paragraph},
     Frame,
 };
-use std::io;
+use std::{io, thread::JoinHandle};
 
 /// Selectable List of Objects
 pub struct StatefulList {
@@ -117,17 +117,18 @@ enum ViewLists {
     Confirm,
 }
 
-pub struct PackageItem {
-    name: String,
-    wheel: char,
-    done_installing: bool,
+#[derive(Debug)]
+pub struct ProcessItem {
+    pub name: String,
+    pub handle: JoinHandle<Result<String, String>>,
+    pub wheel: char,
 }
 
 /// Ui
 pub struct Ui {
     pub packages_list: StatefulList,
     pub distros_list: StatefulList,
-    pub packages_items_list: Vec<PackageItem>,
+    pub process_items_list: Vec<ProcessItem>,
 }
 
 impl Ui {
@@ -147,18 +148,6 @@ impl Ui {
         disable_raw_mode()?;
         io::stdout().execute(LeaveAlternateScreen)?;
         Ok(())
-    }
-
-    /// Set the packages to install
-    pub fn set_packages_items_list(&mut self, selected_packages: &Vec<String>) {
-        self.packages_items_list = selected_packages
-            .into_iter()
-            .map(|p| PackageItem {
-                name: p.to_string(),
-                wheel: '|',
-                done_installing: false,
-            })
-            .collect();
     }
 
     //--------------------------------------------------SELECTION STATE---------------------------
@@ -268,12 +257,16 @@ impl Ui {
                         match active_list {
                             // TODO: get only the selected scripts to run
                             ViewLists::Confirm => {
-                                let _ = run_all(self.packages_list.items.clone());
+                                // set the selected packages in the ui
+                                let process_items =
+                                    run_all(self.packages_list.get_selected_items());
+                                self.process_items_list = process_items;
+                                return Ok((true, confirm_message));
                             }
                             _ => {}
                         }
+                        return Ok((false, confirm_message));
                         // return true to exit selection loop
-                        return Ok((true, confirm_message));
                     }
                     // focus the packages list
                     KeyCode::Char('n') => {
@@ -377,10 +370,10 @@ impl Ui {
         let mut symbol: char = '|';
 
         let list_items: Vec<ListItem> = self
-            .packages_items_list
+            .process_items_list
             .iter_mut()
             .map(|item| {
-                symbol = if item.done_installing {
+                symbol = if item.handle.is_finished() {
                     '✔'
                 } else {
                     Ui::get_spinning_wheel(item.wheel)

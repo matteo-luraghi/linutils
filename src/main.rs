@@ -36,7 +36,7 @@ fn main() -> io::Result<()> {
     let mut ui = Ui {
         packages_list,
         distros_list,
-        packages_items_list: vec![],
+        process_items_list: vec![],
     };
 
     // initialize the ui
@@ -58,10 +58,6 @@ fn main() -> io::Result<()> {
         // read new values
         (should_quit, confirm_message) = ui.handle_selection_events(confirm_message.clone())?;
     }
-
-    // set the selected packages in the ui
-    let selected_packages = ui.packages_list.get_selected_items();
-    ui.set_packages_items_list(&selected_packages);
 
     //-----------------PROCESSING STATE--------------
     // clear the screen

@@ -1,23 +1,15 @@
+use crate::tui::ProcessItem;
 use std::{
     process::{Command, Stdio},
     thread,
 };
 
 /// Run a script from its path
-fn exec_script(path: String) -> Result<String, String> {
-    let script_name_optional = path.split("/").last();
-
-    let script_name = match script_name_optional {
-        Some(name) => name,
-        None => {
-            return Err("Failed to extract script name".to_string());
-        }
-    };
-
+fn exec_script(script_name: String) -> Result<String, String> {
     let mut script = Command::new("sh");
     let output = script
         .arg("-c")
-        .arg(format!("sudo ./{}", path))
+        .arg(format!("sudo ./{}", script_name))
         // do not print the command's output on stdout
         .stdout(Stdio::piped())
         .output()
@@ -34,37 +26,36 @@ fn exec_script(path: String) -> Result<String, String> {
 }
 
 /// Run all scripts in a Vector each on a separate thread
-pub fn run_all(paths: Vec<String>) -> Vec<Result<String, String>> {
+pub fn run_all(packages: Vec<String>) -> Vec<ProcessItem> {
     // save each thread's handle in a vector
-    let mut handles = vec![];
+    let mut process_items = vec![];
 
-    for path in paths {
-        let handle = thread::spawn(|| {
-            let result = exec_script(path);
+    for package in packages {
+        let package_thread = package.clone();
+        let handle = thread::spawn(move || {
+            let result = exec_script(package_thread + ".sh");
             return result;
         });
 
-        handles.push(handle);
+        let process_item = ProcessItem {
+            name: package,
+            handle,
+            wheel: '|',
+        };
+
+        process_items.push(process_item);
     }
 
-    // save each thread's result in a vector
-    let mut results: Vec<Result<String, String>> = vec![];
-    for handle in handles {
-        let result = handle.join();
-        results.push(result.unwrap());
-    }
+    process_items
 
-    results
-}
+    /*
+        // save each thread's result in a vector
+        let mut results: Vec<Result<String, String>> = vec![];
+        for handle in process_items {
+            let result = handle.join();
+            results.push(result.unwrap());
+        }
 
-/// Test the run_all function with a test script and an illegal path
-#[test]
-fn test_run_all() {
-    let packages = vec!["alacritty".to_string(), "src/commands/test.sh".to_string()];
-    let expected_output = vec![
-    Err("Error executing script alacritty\nOutput { status: ExitStatus(unix_wait_status(256)), stdout: \"\", stderr: \"sudo: ./alacritty: command not found\\n\" }".to_string()),
-    Ok("Script test.sh executed correctly".to_string())];
-
-    let results = run_all(packages);
-    assert_eq!(results, expected_output);
+        results
+    */
 }
