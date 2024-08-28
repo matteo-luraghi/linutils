@@ -13,6 +13,7 @@ packages = [
   "nerdfont",
   "src/commands/test",
   "src/commands/test2",
+  "src/commands/bad-test",
 ]
 
 # Add your own distro here

@@ -120,8 +120,10 @@ enum ViewLists {
 #[derive(Debug)]
 pub struct ProcessItem {
     pub name: String,
-    pub handle: JoinHandle<Result<String, String>>,
+    pub handle: Option<JoinHandle<Result<String, String>>>,
     pub wheel: char,
+    pub is_finished: bool,
+    pub error_message: String,
 }
 
 /// Ui
@@ -165,7 +167,7 @@ impl Ui {
 
                 match key.code {
                     // quit
-                    KeyCode::Char('q') => return Ok((true, "".to_string())),
+                    KeyCode::Char('q') => return Ok((true, "exit".to_string())),
                     // move down in the list
                     KeyCode::Down | KeyCode::Char('j') => {
                         match active_list {
@@ -367,20 +369,39 @@ impl Ui {
 
     /// Draw the Ui in the processing state
     pub fn processing_ui(&mut self, frame: &mut Frame) {
-        let mut symbol: char = '|';
-
         let list_items: Vec<ListItem> = self
             .process_items_list
             .iter_mut()
             .map(|item| {
-                symbol = if item.handle.is_finished() {
-                    '✔'
+                // if the thread has finished don't update the content
+                if !item.is_finished {
+                    if let Some(handle) = &item.handle {
+                        // if the thread has not finished update the wheel, otherwise update the
+                        // content based on the exit status code
+                        if handle.is_finished() {
+                            let handle = item.handle.take().unwrap();
+                            let result = handle.join().unwrap();
+                            item.wheel = match result {
+                                Ok(_) => '✔',
+                                Err(text) => {
+                                    item.error_message = text;
+                                    '✗'
+                                }
+                            };
+                            item.is_finished = true;
+                        } else {
+                            item.wheel = Ui::get_spinning_wheel(item.wheel);
+                        }
+                    }
+                }
+
+                let text_content = if item.error_message != "" {
+                    format!("Installing: {} Status: {} Error: {}", item.name, item.wheel, item.error_message)
                 } else {
-                    Ui::get_spinning_wheel(item.wheel)
+                    format!("Installing: {} Status: {}", item.name, item.wheel)
                 };
-                let content = Text::from(format!("{} {}", symbol, item.name));
-                // update the item wheel symbol
-                item.wheel = symbol;
+
+                let content = Text::from(text_content);
                 ListItem::new(content)
             })
             .collect();

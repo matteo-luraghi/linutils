@@ -12,6 +12,7 @@ fn exec_script(script_name: String) -> Result<String, String> {
         .arg(format!("sudo ./{}", script_name))
         // do not print the command's output on stdout
         .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
         .output()
         .expect(&format!("Error executing script {}", script_name));
 
@@ -39,8 +40,10 @@ pub fn run_all(packages: Vec<String>) -> Vec<ProcessItem> {
 
         let process_item = ProcessItem {
             name: package,
-            handle,
+            handle: Some(handle),
             wheel: '|',
+            is_finished: false,
+            error_message: "".to_string(),
         };
 
         process_items.push(process_item);
@@ -58,4 +61,24 @@ pub fn run_all(packages: Vec<String>) -> Vec<ProcessItem> {
 
         results
     */
+}
+
+#[test]
+fn test_exec_script() {
+    let scripts = ["src/commands/test.sh", "src/commands/bad-test.sh"];
+    let expected_outputs = [
+        Ok("Script src/commands/test.sh executed correctly".to_string()), 
+        Err("Error executing script src/commands/bad-test.sh\nOutput { status: ExitStatus(unix_wait_status(256)), stdout: \"\", stderr: \"test crushed\\n\" }".to_string())];
+    let mut outputs: Vec<Result<String, String>> = vec![];
+
+    for script in scripts {
+        let output = exec_script(script.to_string());
+        outputs.push(output);
+    }
+
+    let mut i = 0;
+    for output in outputs {
+        assert_eq!(output, expected_outputs[i]);
+        i += 1;
+    }
 }

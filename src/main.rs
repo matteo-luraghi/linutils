@@ -41,7 +41,7 @@ fn main() -> io::Result<()> {
 
     // initialize the ui
     match ui.initialize() {
-        Ok(()) => {},
+        Ok(()) => {}
         Err(error) => return Err(error),
     }
 
@@ -57,6 +57,16 @@ fn main() -> io::Result<()> {
 
         // read new values
         (should_quit, confirm_message) = ui.handle_selection_events(confirm_message.clone())?;
+
+        if confirm_message == "exit" {
+            // close the ui
+            match ui.exit() {
+                Ok(()) => {}
+                Err(error) => return Err(error),
+            }
+
+            return Ok(());
+        }
     }
 
     //-----------------PROCESSING STATE--------------
@@ -74,8 +84,8 @@ fn main() -> io::Result<()> {
 
     // close the ui
     match ui.exit() {
-        Ok(()) => {},
-        Err(error) => {return Err(error)},
+        Ok(()) => {}
+        Err(error) => return Err(error),
     }
 
     return Ok(());
