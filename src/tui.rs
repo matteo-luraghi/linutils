@@ -6,8 +6,8 @@ use ratatui::{
         ExecutableCommand,
     },
     layout::{Constraint, Layout},
-    style::{Color, Style},
-    text::{Span, Text},
+    style::{Color, Style, Stylize},
+    text::{Line, Span, Text},
     widgets::{Block, List, ListItem, ListState, Paragraph},
     Frame,
 };
@@ -395,14 +395,51 @@ impl Ui {
                     }
                 }
 
-                let text_content = if item.error_message != "" {
-                    format!("Installing: {} Status: {} Error: {}", item.name, item.wheel, item.error_message)
-                } else {
-                    format!("Installing: {} Status: {}", item.name, item.wheel)
-                };
+                let mut text = Text::default();
 
-                let content = Text::from(text_content);
-                ListItem::new(content)
+                match item.wheel {
+                    // success
+                    '✔' => {
+                        text.lines
+                            .push(Into::into(Span::raw(format!("Installed: {}", item.name))));
+                        text.lines.push(Into::into(Span::styled(
+                            format!("Status: {}", item.wheel),
+                            Style::default().fg(Color::Green).bold(),
+                        )));
+                        // extra line for separation
+                        text.lines.push(Line::default());
+                    }
+                    // fail
+                    '✗' => {
+                        text.lines.push(Into::into(Span::raw(format!(
+                            "Failed to install: {}",
+                            item.name
+                        ))));
+                        text.lines.push(Into::into(Span::styled(
+                            format!("Status: {}", item.wheel),
+                            Style::default().fg(Color::Red).bold(),
+                        )));
+                        text.lines.push(Into::into(Span::styled(
+                            format!("{}", item.error_message),
+                            Style::default().fg(Color::White).bg(Color::Red),
+                        )));
+                        // extra line for separation
+                        text.lines.push(Line::default());
+                    }
+                    // still loading
+                    _ => {
+                        text.lines
+                            .push(Into::into(Span::raw(format!("Installing: {}", item.name))));
+                        text.lines.push(Into::into(Span::styled(
+                            format!("Status: {}", item.wheel),
+                            Style::default().fg(Color::Blue).bold(),
+                        )));
+                        // extra line for separation
+                        text.lines.push(Line::default());
+                    }
+                }
+
+                ListItem::new(text)
             })
             .collect();
 

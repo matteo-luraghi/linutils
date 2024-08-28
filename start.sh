@@ -6,5 +6,5 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 # Build the application
 cargo build --release
 
-# Run Linutils
-./target/release/linutils
+# Run Linutils as sudo
+sudo ./target/release/linutils
