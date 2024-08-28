@@ -167,7 +167,7 @@ impl Ui {
 
                 match key.code {
                     // quit
-                    KeyCode::Char('q') => return Ok((true, "exit".to_string())),
+                    KeyCode::Char('q') => return Ok((true, confirm_message)),
                     // move down in the list
                     KeyCode::Down | KeyCode::Char('j') => {
                         match active_list {
@@ -263,7 +263,7 @@ impl Ui {
                                 let process_items =
                                     run_all(self.packages_list.get_selected_items());
                                 self.process_items_list = process_items;
-                                return Ok((true, confirm_message));
+                                return Ok((false, "ended".to_string()));
                             }
                             _ => {}
                         }
@@ -288,7 +288,7 @@ impl Ui {
     }
 
     /// Draw the Ui in the selection state
-    pub fn selection_ui(&mut self, frame: &mut Frame, confirm_message: String) {
+    pub fn selection_ui(&mut self, frame: &mut Frame, confirm_message: String) -> bool {
         const GREETINGS_TEXT: &str = "
         __    _             __  _ __    
        / /   (_)___  __  __/ /_(_) /____
@@ -320,7 +320,7 @@ impl Ui {
             title_area,
         );
         frame.render_widget(
-            Paragraph::new(confirm_message).block(Block::bordered().title("Confirm")),
+            Paragraph::new(confirm_message.clone()).block(Block::bordered().title("Confirm")),
             status_area,
         );
 
@@ -347,6 +347,9 @@ impl Ui {
             .highlight_style(HIGHLIGHTED_STYLE);
 
         frame.render_stateful_widget(distros_widget, right_area, &mut self.distros_list.state);
+
+        // true only after the user has selected the distro and packages and typed "yes"
+        return confirm_message == "ended";
     }
 
     //---------------------------------------------PROCESSING STATE------------------------------
@@ -368,7 +371,7 @@ impl Ui {
     }
 
     /// Draw the Ui in the processing state
-    pub fn processing_ui(&mut self, frame: &mut Frame) {
+    pub fn processing_ui(&mut self, frame: &mut Frame) -> bool {
         let list_items: Vec<ListItem> = self
             .process_items_list
             .iter_mut()
@@ -446,6 +449,31 @@ impl Ui {
         let list = List::new(list_items);
 
         frame.render_widget(list, frame.area());
+
+        // false if all the processes have ended
+        let not_finished = self.process_items_list.iter().any(|item| !item.is_finished);
+
+        // need to invert it so that it's true if all the processes have ended
+        return !not_finished;
+    }
+
+    //-----------------------------------------------ENDING STATE--------------------------------
+
+    pub fn handle_ending_events(&mut self) -> io::Result<bool> {
+        if event::poll(std::time::Duration::from_millis(50))? {
+            if let Event::Key(key) = event::read()? {
+                match key.code {
+                    // quit if q is pressed
+                    KeyCode::Char('q') => return Ok(true),
+                    _ => {}
+                }
+            }
+        }
+        Ok(false)
+    }
+    pub fn ending_ui(&mut self, frame: &mut Frame) -> bool {
+        frame.render_widget(Text::from("Ending, click <q> to quit"), frame.area());
+        false
     }
 
     //---------------------------------------------UTILITY FUNCTIONS------------------------------

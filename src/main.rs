@@ -46,27 +46,18 @@ fn main() -> io::Result<()> {
     }
 
     let mut terminal = Terminal::new(CrosstermBackend::new(io::stdout()))?;
+    let mut user_interrupt = false;
     let mut should_quit = false;
     let mut confirm_message = "".to_string();
 
     //------------------SELECTION STATE--------------
     // screen drawing
-    while !should_quit {
+    while !user_interrupt && !should_quit {
         // draw the terminal
-        terminal.draw(|f| ui.selection_ui(f, confirm_message.clone()))?;
+        terminal.draw(|f| should_quit = ui.selection_ui(f, confirm_message.clone()))?;
 
         // read new values
-        (should_quit, confirm_message) = ui.handle_selection_events(confirm_message.clone())?;
-
-        if confirm_message == "exit" {
-            // close the ui
-            match ui.exit() {
-                Ok(()) => {}
-                Err(error) => return Err(error),
-            }
-
-            return Ok(());
-        }
+        (user_interrupt, confirm_message) = ui.handle_selection_events(confirm_message.clone())?;
     }
 
     //-----------------PROCESSING STATE--------------
@@ -74,12 +65,27 @@ fn main() -> io::Result<()> {
     execute!(terminal.backend_mut(), Clear(ClearType::All))?;
     should_quit = false;
 
-    while !should_quit {
+    while !user_interrupt && !should_quit {
         // draw the terminal
-        terminal.draw(|f| ui.processing_ui(f))?;
+        terminal.draw(|f| should_quit = ui.processing_ui(f))?;
 
         // read the new value
-        should_quit = ui.handle_processing_events()?;
+        user_interrupt = ui.handle_processing_events()?;
+    }
+
+    //-------------------ENDING STATE----------------
+    // clear the screen
+    execute!(terminal.backend_mut(), Clear(ClearType::All))?;
+    should_quit = false;
+
+    while !user_interrupt && !should_quit {
+        // draw the terminal
+        terminal.draw(|f| {
+            should_quit = ui.ending_ui(f);
+        })?;
+
+        // read the new value
+        user_interrupt = ui.handle_ending_events()?;
     }
 
     // close the ui
