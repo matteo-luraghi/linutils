@@ -12,4 +12,7 @@ nala install ./discord.deb -y
 rm -r discord.deb
 
 # Make Discord screen sharing work: uncomment WaylandEnable=false
-sed -i '/^#WaylandEnable=false/s/^#//' /etc/gdm/custom.conf
+# if no argument is passed, otherwise just update discord
+if [ -z "$1" ]; then
+  sed -i '/^#WaylandEnable=false/s/^#//' ~/etc/gdm3/custom.conf
+fi

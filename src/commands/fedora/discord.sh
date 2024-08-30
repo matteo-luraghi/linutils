@@ -10,4 +10,4 @@ fi
 dnf install discord -y
 
 # Make Discord screen sharing work: uncomment WaylandEnable=false
-sed -i '/^#WaylandEnable=false/s/^#//' /etc/gdm/custom.conf
+sed -i '/^#WaylandEnable=false/s/^#//' /etc/gdm3/custom.conf
