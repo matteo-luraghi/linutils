@@ -2,8 +2,6 @@ mod processing;
 mod tui;
 
 use crate::tui::{StatefulList, Ui};
-use ratatui::crossterm::execute;
-use ratatui::crossterm::terminal::{Clear, ClearType};
 use ratatui::{backend::CrosstermBackend, Terminal};
 use serde::Deserialize;
 use std::fs;
@@ -61,8 +59,6 @@ fn main() -> io::Result<()> {
     }
 
     //-----------------PROCESSING STATE--------------
-    // clear the screen
-    execute!(terminal.backend_mut(), Clear(ClearType::All))?;
     should_quit = false;
 
     while !user_interrupt && !should_quit {
@@ -74,8 +70,6 @@ fn main() -> io::Result<()> {
     }
 
     //-------------------ENDING STATE----------------
-    // clear the screen
-    execute!(terminal.backend_mut(), Clear(ClearType::All))?;
     should_quit = false;
 
     while !user_interrupt && !should_quit {

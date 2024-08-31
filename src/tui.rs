@@ -446,6 +446,7 @@ impl Ui {
             })
             .collect();
 
+        // TODO: make list scrollable (maybe also with arrows and vim motion)
         let list = List::new(list_items);
 
         frame.render_widget(list, frame.area());
