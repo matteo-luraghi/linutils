@@ -1,0 +1,6 @@
+# disable auto fetching
+autoFetch: false
+
+# set file editor as nvim
+os:
+  editPreset: 'nvim'

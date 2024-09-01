@@ -6,5 +6,9 @@ if [[ $EUID -ne 0 ]]; then
 	exit 1
 fi
 
+# Install lazygit
 dnf copr enable atim/lazygit -y
 dnf install lazygit
+
+# Copy lazygit config
+cp ~/linutils/src/utils/lazygit.yml ~/.config/lazygit/config.yml
