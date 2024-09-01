@@ -12,9 +12,6 @@ dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-rel
 # Update system
 dnf update -y
 
-# Install basic packages
-dnf install vim python3 golang btop ffmpeg fzf tldr neofetch tree ca-certificates curl gnupg cowsay trash-cli ddcutil -y
-
 # Restore minimize and maximize buttons
 gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
 

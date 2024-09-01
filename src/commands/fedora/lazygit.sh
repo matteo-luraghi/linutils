@@ -8,7 +8,7 @@ fi
 
 # Install lazygit
 dnf copr enable atim/lazygit -y
-dnf install lazygit
+dnf install lazygit -y
 
 # Copy lazygit config
 cp ~/linutils/src/utils/lazygit.yml ~/.config/lazygit/config.yml

@@ -3,6 +3,10 @@
 # Add your own packages here
 # then add an install script in the /commands directory
 packages = [
+  "src/commands/test",
+  "src/commands/test2",
+  "src/commands/bad-test",
+  "awful-test",
   "alacritty",
   "neovim",
   "hyprland",
@@ -12,24 +16,28 @@ packages = [
   "webeep-sync",
   "discord",
   "nerdfont",
-  "src/commands/test",
-  "src/commands/test2",
-  "src/commands/bad-test",
-  "1",
-  "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
+  "vim",
+  "python3",
+  "golang",
+  "btop",
+  "ffmpeg",
+  "fzf",
+  "tldr",
+  "neofetch",
+  "tree",
+  "cowsay",
+  "trash-cli",
+  "ddcutil",
+  "ca-certificates",
 ]
 
 # Add your own distro here
 # then add a directory in the /commands directory
 # with all the install scripts
-distros = [
-  "fedora",
-  "ubuntu",
-]
+[[distros]]
+name = "fedora"
+package_manager = "dnf"
+
+[[distros]]
+name = "ubuntu"
+package_manager = "nala"

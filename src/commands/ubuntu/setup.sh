@@ -50,10 +50,6 @@ Pin-Priority: 1001
 # Prevents updates to install snap firefox
 echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
 
-# Install basic packages
-cd $builddir
-nala install build-essential vim python3 btop ffmpeg firefox fzf tldr neofetch tree ca-certificates curl gnupg cowsay trash-cli ddcutil -y
-
 # Get permissions to use the brightness control extension
 gpasswd --add $USER i2c
 
