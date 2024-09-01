@@ -7,11 +7,16 @@ use serde::Deserialize;
 use std::fs;
 use std::io::{self};
 
-/// Config arguments
+#[derive(Deserialize, Debug)]
+struct Distro {
+    name: String,
+    package_manager: String,
+}
+
 #[derive(Deserialize, Debug)]
 struct Config {
     packages: Vec<String>,
-    distros: Vec<String>,
+    distros: Vec<Distro>,
 }
 
 /// Load the config.toml file into a Config object
@@ -26,7 +31,11 @@ fn main() -> io::Result<()> {
     let config = load_config("./src/config.toml");
     // lists init
     let packages = config.packages;
-    let distros = config.distros;
+    let distros = config
+        .distros
+        .into_iter()
+        .map(|distro| distro.name)
+        .collect();
 
     let packages_list = StatefulList::with_items(packages);
     let distros_list = StatefulList::with_items(distros);
@@ -68,6 +77,7 @@ fn main() -> io::Result<()> {
 
         // read the new value
         user_interrupt = ui.handle_processing_events()?;
+        should_quit = false;
     }
 
     //-------------------ENDING STATE----------------
