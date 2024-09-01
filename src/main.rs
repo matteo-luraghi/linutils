@@ -59,6 +59,7 @@ fn main() -> io::Result<()> {
     }
 
     //-----------------PROCESSING STATE--------------
+    // reset while condition
     should_quit = false;
 
     while !user_interrupt && !should_quit {
@@ -70,6 +71,7 @@ fn main() -> io::Result<()> {
     }
 
     //-------------------ENDING STATE----------------
+    // reset while condition
     should_quit = false;
 
     while !user_interrupt && !should_quit {
