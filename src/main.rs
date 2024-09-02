@@ -1,30 +1,11 @@
 mod processing;
 mod tui;
+mod config;
 
 use crate::tui::{StatefulList, Ui};
+use crate::config::load_config;
 use ratatui::{backend::CrosstermBackend, Terminal};
-use serde::Deserialize;
-use std::fs;
 use std::io::{self};
-
-#[derive(Deserialize, Debug)]
-struct Distro {
-    name: String,
-    package_manager: String,
-}
-
-#[derive(Deserialize, Debug)]
-struct Config {
-    packages: Vec<String>,
-    distros: Vec<Distro>,
-}
-
-/// Load the config.toml file into a Config object
-fn load_config(file_path: &str) -> Config {
-    let config_content = fs::read_to_string(file_path).expect("Failed to read config file");
-
-    toml::from_str(&config_content).expect("Failed to parse config file")
-}
 
 // MAIN
 fn main() -> io::Result<()> {

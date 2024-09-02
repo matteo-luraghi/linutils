@@ -1,4 +1,7 @@
-use crate::tui::ProcessItem;
+use crate::{
+    config::{load_config, Distro},
+    tui::ProcessItem,
+};
 use std::{
     fs, io,
     process::{Command, Stdio},
@@ -6,11 +9,19 @@ use std::{
 };
 
 /// Try to install the package using the package manager of the selected distro
-fn default_installation(distro: String, package: String) -> Result<String, String> {
-    let package_manager = match distro.as_str() {
-        "fedora" => "dnf".to_string(),
-        "ubuntu" => "apt".to_string(),
-        _ => return Err("Distro not supported".to_string()),
+fn default_installation(
+    distro: String,
+    package: String,
+    config_distros: Vec<Distro>,
+) -> Result<String, String> {
+    // find the correct package manager for the selected distro
+    let package_manager = match config_distros
+        .iter()
+        .find(|d| d.name == distro)
+        .map(|d| d.package_manager.clone())
+    {
+        Some(p) => p,
+        None => return Err("Distro not supported".to_string()),
     };
 
     let mut command = Command::new("sh");
@@ -88,6 +99,8 @@ fn is_script_present(scripts: &io::Result<Vec<String>>, script: String) -> bool 
 
 /// Run all scripts in a Vector each on a separate thread
 pub fn run_all(packages: Vec<String>, distros: Vec<String>) -> Vec<ProcessItem> {
+    let config = load_config("./src/config.toml");
+
     // get the only distro selected
     let distro = distros.get(0).unwrap();
 
@@ -111,7 +124,7 @@ pub fn run_all(packages: Vec<String>, distros: Vec<String>) -> Vec<ProcessItem> 
         } else {
             handle = thread::spawn(move || {
                 // use the default installation via package manager
-                let result = default_installation(distro_thread, package_thread);
+                let result = default_installation(distro_thread, package_thread, config.distros);
                 return result;
             });
         }
