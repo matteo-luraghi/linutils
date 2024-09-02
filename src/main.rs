@@ -58,7 +58,6 @@ fn main() -> io::Result<()> {
 
         // read the new value
         user_interrupt = ui.handle_processing_events()?;
-        should_quit = false;
     }
 
     //-------------------ENDING STATE----------------

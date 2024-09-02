@@ -3,9 +3,7 @@ use crate::{
     tui::ProcessItem,
 };
 use std::{
-    fs, io,
-    process::{Command, Stdio},
-    thread,
+    fs, io, process::{Command, Stdio}, sync::Arc, thread
 };
 
 /// Try to install the package using the package manager of the selected distro
@@ -110,6 +108,9 @@ pub fn run_all(packages: Vec<String>, distros: Vec<String>) -> Vec<ProcessItem> 
     // save each thread's handle in a vector
     let mut process_items = vec![];
 
+    // share the distros in multiple threads
+    let distros_arc = Arc::new(config.distros);
+
     for package in packages {
         let package_thread = package.clone();
         let distro_thread = distro.clone();
@@ -122,9 +123,11 @@ pub fn run_all(packages: Vec<String>, distros: Vec<String>) -> Vec<ProcessItem> 
                 return result;
             });
         } else {
+            // safely clone the distros vector
+            let distros_arc_clone = Arc::clone(&distros_arc);
             handle = thread::spawn(move || {
                 // use the default installation via package manager
-                let result = default_installation(distro_thread, package_thread, config.distros);
+                let result = default_installation(distro_thread, package_thread, distros_arc_clone.to_vec());
                 return result;
             });
         }

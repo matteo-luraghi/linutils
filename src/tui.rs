@@ -474,6 +474,7 @@ impl Ui {
         }
         Ok(false)
     }
+
     pub fn ending_ui(&mut self, frame: &mut Frame) -> bool {
         frame.render_widget(Text::from("Ending, click <q> to quit"), frame.area());
         false
