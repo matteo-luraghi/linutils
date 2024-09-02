@@ -8,5 +8,5 @@ fi
 
 # Install webeep
 wget -O webeep.deb "https://github.com/toto04/webeep-sync/releases/latest/download/webeep-sync-debian.deb"
-nala install ./webeep.deb -y
+apt install ./webeep.deb -y
 rm webeep.deb

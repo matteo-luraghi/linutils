@@ -3,9 +3,9 @@
 # Add your own packages here
 # then add an install script in the /commands directory
 packages = [
-  "src/commands/test",
-  "src/commands/test2",
-  "src/commands/bad-test",
+  "test",
+  "test2",
+  "bad-test",
   "awful-test",
   "alacritty",
   "neovim",
@@ -29,6 +29,7 @@ packages = [
   "trash-cli",
   "ddcutil",
   "ca-certificates",
+  "nala",
 ]
 
 # Add your own distro here
@@ -40,4 +41,4 @@ package_manager = "dnf"
 
 [[distros]]
 name = "ubuntu"
-package_manager = "nala"
+package_manager = "apt"

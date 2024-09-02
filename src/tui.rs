@@ -260,8 +260,10 @@ impl Ui {
                             // TODO: get only the selected scripts to run
                             ViewLists::Confirm => {
                                 // set the selected packages in the ui
-                                let process_items =
-                                    run_all(self.packages_list.get_selected_items());
+                                let process_items = run_all(
+                                    self.packages_list.get_selected_items(),
+                                    self.distros_list.get_selected_items(),
+                                );
                                 self.process_items_list = process_items;
                                 return Ok((false, "ended".to_string()));
                             }

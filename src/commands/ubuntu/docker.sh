@@ -16,9 +16,9 @@ echo \
   "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
   "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-nala update
-nala install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+apt update
+apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 wget https://desktop.docker.com/linux/main/amd64/$dockerVersion
 chmod u+x $dockerVersion
-nala install ./$dockerVersion -y
+apt install ./$dockerVersion -y
 rm $dockerVersion
