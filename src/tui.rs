@@ -167,7 +167,11 @@ impl Ui {
 
                 match key.code {
                     // quit
-                    KeyCode::Char('q') => return Ok((true, confirm_message)),
+                    KeyCode::Char('q') | KeyCode::Char('c')
+                        if key.modifiers.contains(KeyModifiers::CONTROL) =>
+                    {
+                        return Ok((true, confirm_message))
+                    }
                     // move down in the list
                     KeyCode::Down | KeyCode::Char('j') => {
                         match active_list {
@@ -361,7 +365,7 @@ impl Ui {
         if event::poll(std::time::Duration::from_millis(50))? {
             if let Event::Key(key) = event::read()? {
                 match key.code {
-                    // quit if CTRL+C is pressed
+                    // quit, in this state only ctrl+c will exit the program
                     KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => {
                         return Ok(true)
                     }
@@ -466,18 +470,17 @@ impl Ui {
         if event::poll(std::time::Duration::from_millis(50))? {
             if let Event::Key(key) = event::read()? {
                 match key.code {
-                    // quit if q is pressed
-                    KeyCode::Char('q') => return Ok(true),
+                    // quit
+                    KeyCode::Char('q') | KeyCode::Char('c')
+                        if key.modifiers.contains(KeyModifiers::CONTROL) =>
+                    {
+                        return Ok(true)
+                    }
                     _ => {}
                 }
             }
         }
         Ok(false)
-    }
-
-    pub fn ending_ui(&mut self, frame: &mut Frame) -> bool {
-        frame.render_widget(Text::from("Ending, click <q> to quit"), frame.area());
-        false
     }
 
     //---------------------------------------------UTILITY FUNCTIONS------------------------------

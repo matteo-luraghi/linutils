@@ -5,7 +5,7 @@ mod config;
 use crate::tui::{StatefulList, Ui};
 use crate::config::load_config;
 use ratatui::{backend::CrosstermBackend, Terminal};
-use std::io::{self};
+use std::io;
 
 // MAIN
 fn main() -> io::Result<()> {
@@ -61,18 +61,19 @@ fn main() -> io::Result<()> {
     }
 
     //-------------------ENDING STATE----------------
-    // reset while condition
-    should_quit = false;
 
-    while !user_interrupt && !should_quit {
-        // draw the terminal
+    // exit only when the user wants to
+    while !user_interrupt {
+        // keep drawing the statuses of installed packages
         terminal.draw(|f| {
-            should_quit = ui.ending_ui(f);
+            should_quit = ui.processing_ui(f);
         })?;
 
         // read the new value
         user_interrupt = ui.handle_ending_events()?;
     }
+
+    //-----------------------EXIT---------------------
 
     // close the ui
     match ui.exit() {

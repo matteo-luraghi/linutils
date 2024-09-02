@@ -9,7 +9,7 @@ packages = [
   "cowsay",
   "ddcutil",
   "discord",
-  "docekr",
+  "docker",
   "ffmpeg",
   "fzf",
   "golang",
