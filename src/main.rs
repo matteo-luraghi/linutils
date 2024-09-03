@@ -56,7 +56,7 @@ fn main() -> io::Result<()> {
 
     while !user_interrupt && !should_quit {
         // draw the terminal
-        terminal.draw(|f| should_quit = ui.processing_ui(f))?;
+        terminal.draw(|f| should_quit = ui.processing_ui(f, false))?;
 
         // read the new value setting ended as false
         user_interrupt = ui.handle_processing_events(false)?;
@@ -68,7 +68,7 @@ fn main() -> io::Result<()> {
     while !user_interrupt {
         // keep drawing the statuses of installed packages
         terminal.draw(|f| {
-            should_quit = ui.processing_ui(f);
+            should_quit = ui.processing_ui(f, true);
         })?;
 
         // read the new value setting ended as true

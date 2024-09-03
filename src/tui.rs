@@ -168,9 +168,8 @@ impl Ui {
 
                 match key.code {
                     // quit
-                    KeyCode::Char('q') | KeyCode::Char('c')
-                        if key.modifiers.contains(KeyModifiers::CONTROL) =>
-                    {
+                    KeyCode::Char('q') => return Ok((true, confirm_message)),
+                    KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => {
                         return Ok((true, confirm_message))
                     }
                     // move down in the list
@@ -410,7 +409,7 @@ impl Ui {
     }
 
     /// Draw the Ui in the processing state
-    pub fn processing_ui(&mut self, frame: &mut Frame) -> bool {
+    pub fn processing_ui(&mut self, frame: &mut Frame, ended: bool) -> bool {
         let list_items: Vec<ListItem> = self
             .process_items_list
             .iter_mut()
@@ -443,9 +442,9 @@ impl Ui {
                     // success
                     '✔' => {
                         text.lines
-                            .push(Into::into(Span::raw(format!("Installed: {}", item.name))));
+                            .push(Into::into(Span::raw(format!(" Installed: {}", item.name))));
                         text.lines.push(Into::into(Span::styled(
-                            format!("Status: {}", item.wheel),
+                            format!(" Status: {}", item.wheel),
                             Style::default().fg(Color::Green).bold(),
                         )));
                         // extra line for separation
@@ -454,15 +453,15 @@ impl Ui {
                     // fail
                     '✗' => {
                         text.lines.push(Into::into(Span::raw(format!(
-                            "Failed to install: {}",
+                            " Failed to install: {}",
                             item.name
                         ))));
                         text.lines.push(Into::into(Span::styled(
-                            format!("Status: {}", item.wheel),
+                            format!(" Status: {}", item.wheel),
                             Style::default().fg(Color::Red).bold(),
                         )));
                         text.lines.push(Into::into(Span::styled(
-                            format!("{}", item.error_message),
+                            format!(" {}", item.error_message),
                             Style::default().fg(Color::White).bg(Color::Red),
                         )));
                         // extra line for separation
@@ -471,9 +470,9 @@ impl Ui {
                     // still loading
                     _ => {
                         text.lines
-                            .push(Into::into(Span::raw(format!("Installing: {}", item.name))));
+                            .push(Into::into(Span::raw(format!(" Installing: {}", item.name))));
                         text.lines.push(Into::into(Span::styled(
-                            format!("Status: {}", item.wheel),
+                            format!(" Status: {}", item.wheel),
                             Style::default().fg(Color::Blue).bold(),
                         )));
                         // extra line for separation
@@ -491,7 +490,19 @@ impl Ui {
             .highlight_style(Style::default())
             .highlight_symbol("> ");
 
-        frame.render_stateful_widget(list, frame.area(), &mut self.process_list_state);
+        let [title_area, main_area] =
+            Layout::vertical([Constraint::Length(5), Constraint::Min(0)]).areas(frame.area());
+
+        let text: &str;
+        if !ended {
+            text = " The packages are being installed\n Use the arrow keys or vim motion keys (j,k) to navigate the list\n To stop the installation use <CTRL+C>";
+        } else {
+            text = " Done!\n Below you can check for errors\n Use <q> to quit";
+        }
+
+        frame.render_widget(Paragraph::new(text).block(Block::bordered()), title_area);
+
+        frame.render_stateful_widget(list, main_area, &mut self.process_list_state);
 
         // false if all the processes have ended
         let not_finished = self.process_items_list.iter().any(|item| !item.is_finished);
