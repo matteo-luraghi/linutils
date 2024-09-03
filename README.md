@@ -1,17 +1,19 @@
-# 🔧 Linutils [WORK IN PROGRESS]
+# 🐧 Linutils
 
-Welcome to Linutils, a Rust-based application that streamlines the setup of a new Linux installation. Whether you're running Ubuntu or Fedora, this tool helps you quickly and effortlessly configure your system by installing your favorite software and setting up your environment just the way you like it.
+Welcome to Linutils, your go-to Rust-based tool for making Linux installation a breeze. 
+
+Everything’s pre-configured to my taste, but you can easily customize it to match your own preferences!
 ## 🚀 Features
 
-- Multi-Distro Support: Works seamlessly with both Ubuntu and Fedora.
+- Multi-Distro Support: Works with both Ubuntu and Fedora.
 - Automated Software Installation:
-  - Essential tools like Docker, Go, Python, Java.
-  - Productivity apps like Discord.
-  - Development tools like Neovim and Alacritty.
+  - Essential tools like docker, go, python, java.
+  - Productivity apps like discord.
+  - Development tools like neovim and lazygit.
 - Environment Setup:
-  - Configure your workspace with Hyprland and Alacritty.
+  - Configure your workspace with hyprland and alacritty.
   - Custom environment variables and aliases.
-- Easy Customization: Modify the configuration file to add or remove packages and settings as needed.
+- Customization: Modify the configuration file and the bash scripts to add or remove packages and settings as needed.
 - Blazingly fast: Built with Rust for performance and reliability.
 
 ## ⚙️ Installation
@@ -19,50 +21,45 @@ Welcome to Linutils, a Rust-based application that streamlines the setup of a ne
 1. Clone the Repository:
 ```bash
 git clone https://github.com/matteo-luraghi/linutils.git
-cd linux-configurator
+cd linutils
 ```
-2. Build the Application (ensure you have rust installed):
+2. Run the starting script
 ```bash
-cargo build --release
+./start.sh
 ```
-3. Run the Application:
-```bash
-./target/release/linutils
-```
-4. Follow the On-Screen Prompts:
-The application will guide you through selecting your distro and configuring your environment.
+3. Follow the On-Screen Prompts:
+The application will guide you through selecting your distro and packages to install and setup.
 
 ## 🛠 Customization
 
-You can customize the setup process by editing the configuration file located at config.toml in the project directory. Add or remove software packages, environment variables, or any other setup instructions as needed.
+1. Update the src/config.toml file: Add any new packages or distros that you want to include in your setup.
+
+2. Create a folder for new distros: If you've added a new distro, create a corresponding directory under src/commands with the name of the distro.
+   
+3. Create bash scripts for each package: Inside the directory for each distro (under src/commands), create bash scripts for the packages you’ve added. These scripts should handle the installation or configuration of those packages on the respective distro.
+4. If you need to use configuration files in your bash scripts, you can easily save them in the src/utils directory.
 
 ## 📂 Project Structure
 
     linuitls/
     ├── src/
-    │   ├── main.rs           # Entry point of the application
+    |   ├── commands/         # All the bash scripts needed to install packages
+    |   |  ├── _tests/        # Bash scripts for testing
+    |   |  ├── fedora/        # Bash scripts to setup and install packages in Fedora
+    |   |  └──  ubuntu/       # Bash scripts to setup and install packages in Ubuntu
+    │   ├── utils/            # Config files, wallpaper and fonts
     │   ├── config.rs         # Configuration file handling
-    │   ├── installer.rs      # Installation logic for each package
-    │   ├── environment.rs    # Environment setup logic
-    │   └── ...               # Additional modules
-    ├── config.toml           # Default configuration file
+    │   ├── main.rs           # Entry point of the application
+    │   ├── processing.rs     # Processes logic
+    |   ├── tui.rs            # TUI logic
+    │   └──  config.toml      # Configuration file for packages and distros
     ├── README.md             # This README file
     └── Cargo.toml            # Rust project file
 
 ## 🧑‍💻 Contributing
 
-Feel free to fork this repository and submit pull requests if you have any ideas for new features, supported distros, or improvements!
+Feel free to fork this repository and submit pull requests if you want to add packages and/or distros! See [Customization](#-customization) for more info.
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-Happy coding, and enjoy your perfectly configured Linux system! 🎉
-
-## Future reference
-
-How to exec a specific file
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/matteo-luraghi/linutils/master/ubuntu/apps/discord.sh | sudo sh
-```
