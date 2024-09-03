@@ -4,6 +4,7 @@ mod tui;
 
 use crate::config::load_config;
 use crate::tui::{StatefulList, Ui};
+use ratatui::widgets::ListState;
 use ratatui::{backend::CrosstermBackend, Terminal};
 use std::io;
 
@@ -25,6 +26,7 @@ fn main() -> io::Result<()> {
         packages_list,
         distros_list,
         process_items_list: vec![],
+        process_list_state: ListState::default(),
     };
 
     // initialize the ui
@@ -56,8 +58,8 @@ fn main() -> io::Result<()> {
         // draw the terminal
         terminal.draw(|f| should_quit = ui.processing_ui(f))?;
 
-        // read the new value
-        user_interrupt = ui.handle_processing_events()?;
+        // read the new value setting ended as false
+        user_interrupt = ui.handle_processing_events(false)?;
     }
 
     //-------------------ENDING STATE----------------
@@ -69,8 +71,8 @@ fn main() -> io::Result<()> {
             should_quit = ui.processing_ui(f);
         })?;
 
-        // read the new value
-        user_interrupt = ui.handle_ending_events()?;
+        // read the new value setting ended as true
+        user_interrupt = ui.handle_processing_events(true)?;
     }
 
     //-----------------------EXIT---------------------

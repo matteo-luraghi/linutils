@@ -131,6 +131,7 @@ pub struct Ui {
     pub packages_list: StatefulList,
     pub distros_list: StatefulList,
     pub process_items_list: Vec<ProcessItem>,
+    pub process_list_state: ListState,
 }
 
 impl Ui {
@@ -361,13 +362,45 @@ impl Ui {
     //---------------------------------------------PROCESSING STATE------------------------------
 
     /// Handle user's commands in the processing state
-    pub fn handle_processing_events(&mut self) -> io::Result<bool> {
+    pub fn handle_processing_events(&mut self, ended: bool) -> io::Result<bool> {
         if event::poll(std::time::Duration::from_millis(50))? {
             if let Event::Key(key) = event::read()? {
                 match key.code {
-                    // quit, in this state only ctrl+c will exit the program
+                    // quit
                     KeyCode::Char('c') if key.modifiers.contains(KeyModifiers::CONTROL) => {
-                        return Ok(true)
+                        return Ok(true);
+                    }
+                    // quit only if all the processes have ended
+                    KeyCode::Char('q') => {
+                        return Ok(ended);
+                    }
+                    // move up in the list
+                    KeyCode::Up | KeyCode::Char('k') => {
+                        let i = match self.process_list_state.selected() {
+                            Some(i) => {
+                                if i == 0 {
+                                    self.process_items_list.len() - 1
+                                } else {
+                                    i - 1
+                                }
+                            }
+                            None => 0,
+                        };
+                        self.process_list_state.select(Some(i));
+                    }
+                    // move down in the list
+                    KeyCode::Down | KeyCode::Char('j') => {
+                        let i = match self.process_list_state.selected() {
+                            Some(i) => {
+                                if i >= self.process_items_list.len() - 1 {
+                                    0
+                                } else {
+                                    i + 1
+                                }
+                            }
+                            None => 0,
+                        };
+                        self.process_list_state.select(Some(i));
                     }
                     _ => {}
                 }
@@ -452,35 +485,19 @@ impl Ui {
             })
             .collect();
 
-        // TODO: make list scrollable (maybe also with arrows and vim motion)
-        let list = List::new(list_items);
+        // scrollable list
+        let list = List::new(list_items)
+            .block(Block::bordered().title("Processes"))
+            .highlight_style(Style::default())
+            .highlight_symbol("> ");
 
-        frame.render_widget(list, frame.area());
+        frame.render_stateful_widget(list, frame.area(), &mut self.process_list_state);
 
         // false if all the processes have ended
         let not_finished = self.process_items_list.iter().any(|item| !item.is_finished);
 
         // need to invert it so that it's true if all the processes have ended
-        return !not_finished;
-    }
-
-    //-----------------------------------------------ENDING STATE--------------------------------
-
-    pub fn handle_ending_events(&mut self) -> io::Result<bool> {
-        if event::poll(std::time::Duration::from_millis(50))? {
-            if let Event::Key(key) = event::read()? {
-                match key.code {
-                    // quit
-                    KeyCode::Char('q') | KeyCode::Char('c')
-                        if key.modifiers.contains(KeyModifiers::CONTROL) =>
-                    {
-                        return Ok(true)
-                    }
-                    _ => {}
-                }
-            }
-        }
-        Ok(false)
+        !not_finished
     }
 
     //---------------------------------------------UTILITY FUNCTIONS------------------------------
