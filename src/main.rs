@@ -1,9 +1,9 @@
+mod config;
 mod processing;
 mod tui;
-mod config;
 
-use crate::tui::{StatefulList, Ui};
 use crate::config::load_config;
+use crate::tui::{StatefulList, Ui};
 use ratatui::{backend::CrosstermBackend, Terminal};
 use std::io;
 

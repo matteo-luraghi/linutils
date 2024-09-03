@@ -3,7 +3,10 @@ use crate::{
     tui::ProcessItem,
 };
 use std::{
-    fs, io, process::{Command, Stdio}, sync::Arc, thread
+    fs, io,
+    process::{Command, Stdio},
+    sync::Arc,
+    thread,
 };
 
 /// Try to install the package using the package manager of the selected distro
@@ -127,7 +130,8 @@ pub fn run_all(packages: Vec<String>, distros: Vec<String>) -> Vec<ProcessItem> 
             let distros_arc_clone = Arc::clone(&distros_arc);
             handle = thread::spawn(move || {
                 // use the default installation via package manager
-                let result = default_installation(distro_thread, package_thread, distros_arc_clone.to_vec());
+                let result =
+                    default_installation(distro_thread, package_thread, distros_arc_clone.to_vec());
                 return result;
             });
         }
@@ -147,6 +151,23 @@ pub fn run_all(packages: Vec<String>, distros: Vec<String>) -> Vec<ProcessItem> 
 }
 
 #[test]
+fn test_run_all() {
+    let packages = vec!["test".to_string(), "bad-test".to_string()];
+    let distros = vec!["test".to_string()];
+
+    let result = run_all(packages.clone(), distros);
+
+    let mut i = 0;
+    for item in result {
+        assert_eq!(item.name, packages.get(i).unwrap().clone());
+        assert_eq!(item.wheel, '|');
+        assert_eq!(item.is_finished, false);
+        assert_eq!(item.error_message, "".to_string());
+        i += 1;
+    }
+}
+
+#[test]
 fn test_exec_script() {
     let scripts = ["test.sh", "bad-test.sh"];
     let expected_outputs = [
@@ -155,7 +176,7 @@ fn test_exec_script() {
     let mut outputs: Vec<Result<String, String>> = vec![];
 
     for script in scripts {
-        let output = exec_script("\\".to_string(), script.to_string());
+        let output = exec_script("_tests".to_string(), script.to_string());
         outputs.push(output);
     }
 
