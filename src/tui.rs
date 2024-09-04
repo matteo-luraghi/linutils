@@ -8,7 +8,7 @@ use ratatui::{
     layout::{Constraint, Layout},
     style::{Color, Style, Stylize},
     text::{Line, Span, Text},
-    widgets::{Block, List, ListItem, ListState, Paragraph},
+    widgets::{Block, Gauge, List, ListItem, ListState, Paragraph},
     Frame,
 };
 use std::{io, thread::JoinHandle};
@@ -441,6 +441,7 @@ impl Ui {
                 match item.wheel {
                     // success
                     '✔' => {
+                        // setup the printing
                         text.lines
                             .push(Into::into(Span::raw(format!(" Installed: {}", item.name))));
                         text.lines.push(Into::into(Span::styled(
@@ -452,6 +453,7 @@ impl Ui {
                     }
                     // fail
                     '✗' => {
+                        // setup the printing
                         text.lines.push(Into::into(Span::raw(format!(
                             " Failed to install: {}",
                             item.name
@@ -484,14 +486,32 @@ impl Ui {
             })
             .collect();
 
+        let number_ended_processes = self
+            .process_items_list
+            .iter()
+            .filter(|item| item.is_finished)
+            .count();
+        // percentage of ended processes
+        let percentage =
+            (number_ended_processes as f64 / self.process_items_list.len() as f64) * 100.0;
+
         // scrollable list
         let list = List::new(list_items)
             .block(Block::bordered().title("Processes"))
             .highlight_style(Style::default())
             .highlight_symbol("> ");
 
-        let [title_area, main_area] =
-            Layout::vertical([Constraint::Length(5), Constraint::Min(0)]).areas(frame.area());
+        let [title_area, main_area, status_area] = Layout::vertical([
+            Constraint::Length(5),
+            Constraint::Min(0),
+            Constraint::Length(5),
+        ])
+        .areas(frame.area());
+
+        let status_bar = Gauge::default()
+            .block(Block::bordered().title("Progress"))
+            .gauge_style(Style::default().fg(Color::LightGreen).bg(Color::Black))
+            .percent(percentage as u16);
 
         let text: &str;
         if !ended {
@@ -503,6 +523,8 @@ impl Ui {
         frame.render_widget(Paragraph::new(text).block(Block::bordered()), title_area);
 
         frame.render_stateful_widget(list, main_area, &mut self.process_list_state);
+
+        frame.render_widget(status_bar, status_area);
 
         // false if all the processes have ended
         let not_finished = self.process_items_list.iter().any(|item| !item.is_finished);
