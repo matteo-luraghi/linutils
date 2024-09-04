@@ -46,13 +46,13 @@ The application will guide you through selecting your distro and packages to ins
     |   ├── commands/         # All the bash scripts needed to install packages
     |   |  ├── _tests/        # Bash scripts for testing
     |   |  ├── fedora/        # Bash scripts to setup and install packages in Fedora
-    |   |  └──  ubuntu/       # Bash scripts to setup and install packages in Ubuntu
+    |   |  └── ubuntu/        # Bash scripts to setup and install packages in Ubuntu
     │   ├── utils/            # Config files, wallpaper and fonts
     │   ├── config.rs         # Configuration file handling
     │   ├── main.rs           # Entry point of the application
     │   ├── processing.rs     # Processes logic
     |   ├── tui.rs            # TUI logic
-    │   └──  config.toml      # Configuration file for packages and distros
+    │   └── config.toml       # Configuration file for packages and distros
     ├── README.md             # This README file
     └── Cargo.toml            # Rust project file
 
