@@ -510,7 +510,7 @@ impl Ui {
 
         let status_bar = Gauge::default()
             .block(Block::bordered().title("Progress"))
-            .gauge_style(Style::default().fg(Color::LightGreen).bg(Color::Black))
+            .gauge_style(Style::default().fg(Color::LightGreen).bg(Color::DarkGray))
             .percent(percentage as u16);
 
         let text: &str;
