@@ -326,7 +326,7 @@ impl Ui {
             title_area,
         );
         frame.render_widget(
-            Paragraph::new(confirm_message.clone()).block(Block::bordered().title("Confirm")),
+            Paragraph::new(confirm_message.clone()).block(Block::bordered().title(" Confirm ")),
             status_area,
         );
 
@@ -338,7 +338,7 @@ impl Ui {
         );
 
         let packages_widget = List::new(packages)
-            .block(Block::bordered().title("Select what to install and setup"))
+            .block(Block::bordered().title(" Select what to install and setup "))
             .highlight_style(HIGHLIGHTED_STYLE);
 
         frame.render_stateful_widget(packages_widget, left_area, &mut self.packages_list.state);
@@ -349,7 +349,7 @@ impl Ui {
         );
 
         let distros_widget = List::new(distros)
-            .block(Block::bordered().title("Choose your current distro"))
+            .block(Block::bordered().title(" Choose your current distro "))
             .highlight_style(HIGHLIGHTED_STYLE);
 
         frame.render_stateful_widget(distros_widget, right_area, &mut self.distros_list.state);
@@ -497,7 +497,7 @@ impl Ui {
 
         // scrollable list
         let list = List::new(list_items)
-            .block(Block::bordered().title("Processes"))
+            .block(Block::bordered().title(" Processes "))
             .highlight_style(Style::default())
             .highlight_symbol("> ");
 
@@ -509,7 +509,7 @@ impl Ui {
         .areas(frame.area());
 
         let status_bar = Gauge::default()
-            .block(Block::bordered().title("Progress"))
+            .block(Block::bordered().title(" Progress "))
             .gauge_style(Style::default().fg(Color::LightGreen).bg(Color::DarkGray))
             .percent(percentage as u16);
 

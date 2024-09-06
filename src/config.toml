@@ -21,6 +21,7 @@ packages = [
   "neovim",
   "nerdfont",
   "python3",
+  "setup",
   "tldr",
   "trash-cli",
   "tree",
