@@ -23,11 +23,16 @@ Everything’s pre-configured to my taste, but you can easily customize it to ma
 git clone https://github.com/matteo-luraghi/linutils.git
 cd linutils
 ```
-2. Run the starting script
+2. Make sure to have rust installed
 ```bash
-./start.sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
-3. Follow the On-Screen Prompts:
+3. Buil the binary and run the app
+```bash
+cargo build --release
+sudo ./target/release/linutils
+```
+4. Follow the On-Screen Prompts:
 The application will guide you through selecting your distro and packages to install and setup.
 
 ## 🛠 Customization
@@ -37,6 +42,7 @@ The application will guide you through selecting your distro and packages to ins
 2. Create a folder for new distros: If you've added a new distro, create a corresponding directory under src/commands with the name of the distro.
    
 3. Create bash scripts for each package: Inside the directory for each distro (under src/commands), create bash scripts for the packages you’ve added. These scripts should handle the installation or configuration of those packages on the respective distro.
+
 4. If you need to use configuration files in your bash scripts, you can easily save them in the src/utils directory.
 
 ## 📂 Project Structure
