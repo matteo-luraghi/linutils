@@ -30,7 +30,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 3. Buil the binary and run the app
 ```bash
 cargo build --release
-sudo ./target/release/linutils
+./target/release/linutils
 ```
 4. Follow the On-Screen Prompts:
 The application will guide you through selecting your distro and packages to install and setup.
