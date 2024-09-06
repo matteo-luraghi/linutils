@@ -1,16 +1,10 @@
 #!/bin/bash
 
-# Check if Script is Run as Root
-if [[ $EUID -ne 0 ]]; then
-  echo "You must be a root user to run this script, please run sudo ./setup.sh" 2>&1
-  exit 1
-fi
-
 username=$(id -u -n 1000)
 builddir=$(pwd)
 
-apt update
-apt upgrade -y
+sudo apt update
+sudo apt upgrade -y
 
 echo "deb http://deb.volian.org/volian/ scar main" | sudo tee /etc/apt/sources.list.d/volian-archive-scar-unstable.list; wget -qO - https://deb.volian.org/volian/scar.key | sudo tee /etc/apt/trusted.gpg.d/volian-archive-scar-unstable.gpg
 
@@ -28,15 +22,15 @@ snap remove --purge cups
 snap remove --purge core22
 snap remove core --revision 16091
 snap remove --purge snapd
-apt remove --autoremove snapd -y
+sudo apt remove --autoremove snapd -y
 # File to not resintall snap
 echo 'Package: snapd
 Pin: release a=*
 Pin-Priority: -10
 ' | sudo tee /etc/apt/preferences.d/nosnap.pref
 rm -r snap
-nala update
-apt install --install-suggests gnome-software -y
+sudo apt update
+sudo apt install --install-suggests gnome-software -y
 
 # Prepare firefox installation
 cd $builddir

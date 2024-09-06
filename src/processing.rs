@@ -50,7 +50,7 @@ fn exec_script(distro: String, script_name: String) -> Result<String, String> {
     let mut script = Command::new("sh");
     let output = script
         .arg("-c")
-        .arg(format!("sudo ./src/commands/{}/{}", distro, script_name))
+        .arg(format!("./src/commands/{}/{}", distro, script_name))
         // do not print the command's output on stdout
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
