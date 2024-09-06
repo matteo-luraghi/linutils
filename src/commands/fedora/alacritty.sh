@@ -4,5 +4,5 @@
 sudo dnf install alacritty -y
 
 # Setup alacritty
-mkdir ~/.config/alacritty
-cp ~/linutils/src/utils/alacritty.toml ~/.config/alacritty
+mkdir /home/$USER/.config/alacritty
+cp /home/$USER/linutils/src/utils/alacritty.toml /home/$USER/.config/alacritty
