@@ -48,5 +48,5 @@ gpasswd --add $USER i2c
 
 # Change Wallpaper
 cd $builddir
-gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$username/linutils/src/utils/wallpaper.jpg
-gsettings set org.gnome.desktop.background picture-uri file:///home/$username/linutils/src/utils/wallpaper.jpg
+gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$USER/linutils/src/utils/wallpaper.jpg
+gsettings set org.gnome.desktop.background picture-uri file:///home/$USER/linutils/src/utils/wallpaper.jpg
