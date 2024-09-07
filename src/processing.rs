@@ -9,6 +9,24 @@ use std::{
     thread,
 };
 
+/// Grant sudo access to linutils
+pub fn get_sudo_access() -> std::io::Result<String> {
+    let output = Command::new("sh")
+        .arg("-c")
+        .arg("sudo echo")
+        .output()
+        .expect("Failed to get sudo access");
+
+    if output.status.success() {
+        return Ok("Starting Linutils...".to_string());
+    } else {
+        return Err(io::Error::new(
+            io::ErrorKind::PermissionDenied,
+            "Failed to get sudo access",
+        ));
+    }
+}
+
 /// Try to install the package using the package manager of the selected distro
 fn default_installation(
     distro: String,

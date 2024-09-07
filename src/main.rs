@@ -10,6 +10,14 @@ use std::io;
 
 // MAIN
 fn main() -> io::Result<()> {
+    // authorize the app
+    let auth = processing::get_sudo_access();
+    match auth {
+        Ok(success) => println!("{}", success),
+        Err(error) => return Err(error),
+    }
+
+    // get the configuration
     let config = load_config("./src/config.toml");
     // lists init
     let packages = config.packages;
