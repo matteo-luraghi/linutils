@@ -26,4 +26,5 @@ cp /home/$USER/linutils/src/utils/matteleo.zsh-theme /home/$USER/.oh-my-zsh/them
 
 cp /home/$USER/linutils/src/utils/.zshrc /home/$USER/.zshrc
 
-chsh -s $(which zsh)
+# Change shell for the current user
+sudo chsh -s $(which zsh) $USER
