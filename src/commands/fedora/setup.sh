@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# Use parallel downloads in dnf
+FILE="/etc/dnf/dnf.conf"
+
+# The line to add
+LINE="max_parallel_downloads=10"
+
+# Check if the line already exists
+if ! grep -q "^$LINE" "$FILE"; then
+    # If the line does not exist, append it
+    echo "$LINE" | sudo tee -a "$FILE" > /dev/null
+    echo "Line added: $LINE"
+else
+    echo "Line already exists: $LINE"
+fi
+
 # Update system
 sudo dnf update -y
 
