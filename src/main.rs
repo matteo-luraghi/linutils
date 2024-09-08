@@ -1,8 +1,9 @@
 mod config;
 mod processing;
+mod state;
 mod tui;
 
-use crate::config::load_config;
+use crate::state::State;
 use crate::tui::{StatefulList, Ui};
 use ratatui::widgets::ListState;
 use ratatui::{backend::CrosstermBackend, Terminal};
@@ -18,7 +19,7 @@ fn main() -> io::Result<()> {
     }
 
     // get the configuration
-    let config = load_config("./src/config.toml");
+    let config = config::load_config("./src/config.toml");
     // lists init
     let packages = config.packages;
     let distros = config
@@ -44,52 +45,59 @@ fn main() -> io::Result<()> {
     }
 
     let mut terminal = Terminal::new(CrosstermBackend::new(io::stdout()))?;
+    // true if the user decides to exit
     let mut user_interrupt = false;
-    let mut should_quit = false;
+    // true if state needs to be changed
+    let mut next_state = false;
+    // state
+    let mut state = State::Selection;
+    // message for the selection view
     let mut confirm_message = "".to_string();
 
-    //------------------SELECTION STATE--------------
-    // screen drawing
-    while !user_interrupt && !should_quit {
-        // draw the terminal
-        terminal.draw(|f| should_quit = ui.selection_ui(f, confirm_message.clone()))?;
-
-        // read new values
-        (user_interrupt, confirm_message) = ui.handle_selection_events(confirm_message.clone())?;
-    }
-
-    //-----------------PROCESSING STATE--------------
-    // reset while condition
-    should_quit = false;
-
-    while !user_interrupt && !should_quit {
-        // draw the terminal
-        terminal.draw(|f| should_quit = ui.processing_ui(f, false))?;
-
-        // read the new value setting ended as false
-        user_interrupt = ui.handle_processing_events(false)?;
-    }
-
-    //-------------------ENDING STATE----------------
-
-    // exit only when the user wants to
     while !user_interrupt {
-        // keep drawing the statuses of installed packages
-        terminal.draw(|f| {
-            should_quit = ui.processing_ui(f, true);
-        })?;
+        match state {
+            State::Selection => {
+                terminal.draw(|f| next_state = ui.selection_ui(f, confirm_message.clone()))?;
 
-        // read the new value setting ended as true
-        user_interrupt = ui.handle_processing_events(true)?;
+                // read new values
+                (user_interrupt, confirm_message) =
+                    ui.handle_selection_events(confirm_message.clone())?;
+            }
+            State::Process => {
+                terminal.draw(|f| next_state = ui.processing_ui(f, false))?;
+
+                // read the new value setting ended as false
+                user_interrupt = ui.handle_processing_events(false)?;
+            }
+            State::End => {
+                // keep drawing the status of installed packages
+                terminal.draw(|f| {
+                    _ = ui.processing_ui(f, true);
+                })?;
+
+                // read the new value setting ended as true
+                user_interrupt = ui.handle_processing_events(true)?;
+            }
+        }
+
+        if next_state {
+            state.next_state();
+            next_state = false;
+        }
     }
 
-    //-----------------------EXIT---------------------
+    let exit_message = match state {
+        State::Process => "Execution interrupted, exiting now.",
+        _ => "Closing Linutils...",
+    };
 
-    // close the ui
+    // close the ui and display exit message
     match ui.exit() {
-        Ok(()) => {}
+        Ok(()) => {
+            println!("{}", exit_message);
+        }
         Err(error) => return Err(error),
     }
 
-    return Ok(());
+    Ok(())
 }
