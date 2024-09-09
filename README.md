@@ -64,7 +64,9 @@ The application will guide you through selecting your distro and packages to ins
 
 ## 🧑‍💻 Contributing
 
-Feel free to fork this repository and submit pull requests if you want to add packages and/or distros! See [Customization](#-customization) for more info.
+Feel free to fork this repository and submit pull requests if you want to add packages and/or distros! 
+
+See [Customization](#-customization) for more info.
 
 ## 📄 License
 
