@@ -59,7 +59,12 @@ fn default_installation(
     {
         return Ok(format!("Package {} installed successfully", package));
     } else {
-        return Err(format!("Error installing package {} {:?}", package, output));
+        return Err(format!(
+            "Error installing package {} {:?}",
+            package,
+            // error message
+            String::from_utf8_lossy(&output.stderr)
+        ));
     }
 }
 

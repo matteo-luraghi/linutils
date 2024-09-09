@@ -274,7 +274,6 @@ impl Ui {
                             _ => {}
                         }
                         return Ok((false, confirm_message));
-                        // return true to exit selection loop
                     }
                     // focus the packages list
                     KeyCode::Char('n') => {
