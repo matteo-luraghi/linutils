@@ -89,7 +89,9 @@ fn exec_script(distro: String, script_name: String) -> Result<String, String> {
     } else {
         return Err(format!(
             "Error executing script {} {:?}",
-            script_name, output
+            script_name,
+            // error message
+            String::from_utf8_lossy(&output.stderr)
         ));
     }
 }
