@@ -12,7 +12,6 @@ packages = [
   "docker",
   "fzf",
   "golang",
-  "hyprland",
   "lazygit",
   "nala",
   "neofetch",
