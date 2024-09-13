@@ -197,7 +197,7 @@ fn test_exec_script() {
     let scripts = ["test.sh", "bad-test.sh"];
     let expected_outputs = [
         Ok("Script test.sh executed correctly".to_string()), 
-        Err("Error executing script bad-test.sh Output { status: ExitStatus(unix_wait_status(256)), stdout: \"\", stderr: \"test crushed\\n\" }".to_string())];
+        Err("Error executing script bad-test.sh \"test crushed\\n\"".to_string())];
     let mut outputs: Vec<Result<String, String>> = vec![];
 
     for script in scripts {
