@@ -12,6 +12,7 @@ packages = [
   "docker",
   "fzf",
   "golang",
+  "kitty",
   "lazygit",
   "nala",
   "neofetch",
