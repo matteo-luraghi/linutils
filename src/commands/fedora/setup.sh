@@ -31,11 +31,13 @@ gsettings set org.gnome.desktop.background picture-uri file:///home/$USER/linuti
 # Set the custom keybinding for opening Alacritty
 gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']"
 
-# Define the new keybinding command
+# Keybindings
+
+# Open terminal with ctrl+alt+tab
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ name 'Alacritty'
-
-# Set the command to open Alacritty
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ command 'alacritty'
-
-# Set the keybinding (Ctrl+Alt+T)
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ binding '<Control><Alt>T'
+
+# Switch windows with alt+tab
+gsettings set org.gnome.shell.app-switcher current-workspace-only false
+gsettings set org.gnome.desktop.wm.keybindings switch-windows "['<Alt>Tab']"
