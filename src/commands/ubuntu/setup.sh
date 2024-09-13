@@ -50,3 +50,6 @@ gpasswd --add $USER i2c
 cd $builddir
 gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$USER/linutils/src/utils/wallpaper.jpg
 gsettings set org.gnome.desktop.background picture-uri file:///home/$USER/linutils/src/utils/wallpaper.jpg
+
+# Setup the dock
+gsettings set org.gnome.shell favorite-apps "['org.gnome.Nautilus.desktop', 'firefox.desktop', 'kitty.desktop']"

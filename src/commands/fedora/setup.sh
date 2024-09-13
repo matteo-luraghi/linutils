@@ -31,3 +31,6 @@ gsettings set org.gnome.desktop.background picture-uri file:///home/$USER/linuti
 # Switch windows with alt+tab
 gsettings set org.gnome.shell.app-switcher current-workspace-only false
 gsettings set org.gnome.desktop.wm.keybindings switch-windows "['<Alt>Tab']"
+
+# Setup the dock
+gsettings set org.gnome.shell favorite-apps "['org.gnome.Nautilus.desktop', 'firefox.desktop', 'kitty.desktop']"
