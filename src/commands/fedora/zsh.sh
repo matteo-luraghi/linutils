@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo dnf install git-core zsh curl python3-pip -y
+
 # Install custom shell and color scheme
 pip3 install --user powerline-status
 
@@ -10,7 +12,6 @@ fc-cache -vf ~/.fonts/
 
 # Install ZSH
 cd /home/$USER
-dnf install -y git-core zsh curl
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 # Install plug-ins
