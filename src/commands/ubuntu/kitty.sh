@@ -4,7 +4,7 @@
 sudo apt install kitty -y
 
 # Setup config
-mkdir /home/$USER/.config/kitty
+mkdir -p /home/$USER/.config/kitty
 cp /home/$USER/linutils/src/utils/kitty.conf /home/$USER/.config/kitty
 
 # Open terminal with ctrl+alt+tab

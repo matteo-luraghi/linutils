@@ -5,7 +5,7 @@ pip3 install --user powerline-status
 apt install -y fonts-powerline
 
 # Install Patched Font
-mkdir ~/.fonts
+mkdir -p ~/.fonts
 sudo cp -a ~/linutils/src/utils/fonts/. ~/.fonts/
 fc-cache -vf ~/.fonts/
 

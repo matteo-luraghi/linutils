@@ -8,7 +8,7 @@ sudo install lazygit /usr/local/bin
 rm lazygit.tar.gz
 
 # Copy lazygit config
-mkdir ~/.config/lazygit/
+mkdir -p ~/.config/lazygit/
 cp ~/linutils/src/utils/lazygit.yml ~/.config/lazygit/config.yml
 
 # Remove the directory

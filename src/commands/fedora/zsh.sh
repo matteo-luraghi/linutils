@@ -6,7 +6,7 @@ sudo dnf install git-core zsh curl python3-pip -y
 pip3 install --user powerline-status
 
 # Install Patched Font
-mkdir /home/$USER/.fonts
+mkdir -p /home/$USER/.fonts
 sudo cp -a /home/$USER/linutils/src/utils/fonts/. /home/$USER/.fonts/
 fc-cache -vf ~/.fonts/
 

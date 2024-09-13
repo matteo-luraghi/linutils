@@ -6,7 +6,7 @@ sudo apt update -y
 sudo apt install alacritty -y
 
 # Setup alacritty
-mkdir ~/.config/alacritty
+mkdir -p ~/.config/alacritty
 cp ~/linutils/src/utils/alacritty.toml ~/.config/alacritty
 
 # Open terminal with ctrl+alt+tab
