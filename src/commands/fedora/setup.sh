@@ -34,3 +34,6 @@ gsettings set org.gnome.desktop.wm.keybindings switch-windows "['<Alt>Tab']"
 
 # Setup the dock
 gsettings set org.gnome.shell favorite-apps "['org.gnome.Nautilus.desktop', 'firefox.desktop', 'kitty.desktop']"
+
+# Setup battery percentage
+git@github.com:matteo-luraghi/linutils.git
