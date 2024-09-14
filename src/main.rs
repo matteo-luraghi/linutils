@@ -9,7 +9,6 @@ use ratatui::widgets::ListState;
 use ratatui::{backend::CrosstermBackend, Terminal};
 use std::io;
 
-// MAIN
 fn main() -> io::Result<()> {
     // authorize the app
     let auth = processing::get_sudo_access();
