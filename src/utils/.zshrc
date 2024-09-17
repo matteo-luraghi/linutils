@@ -81,6 +81,11 @@ alias rm='trash -v'
 # fzf in neovim
 alias inv='nvim $(fzf -m --preview="less {}")'
 
+# common errors
+alias caler=clear
+alias clera=clear
+alias clrea=clear
+
 # fly
 export FLYCTL_INSTALL="/home/matteo/.fly"
 export PATH="$FLYCTL_INSTALL/bin:$PATH"
