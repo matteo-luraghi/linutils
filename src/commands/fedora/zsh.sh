@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo dnf install git-core zsh curl python3-pip -y
+sudo dnf install git-core zsh curl python3-pip golang-github-alecthomas-chroma -y
 
 # Install custom shell and color scheme
 pip3 install --user powerline-status
