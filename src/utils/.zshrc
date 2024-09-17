@@ -79,6 +79,10 @@ export PATH=$PATH:/usr/local/go/bin
 # trash
 alias rm='trash -v'
 
+# open
+alias open=xdg-open
+alias opne=xdg-open
+
 # fzf in neovim
 alias inv='nvim $(fzf -m --preview="less {}")'
 
