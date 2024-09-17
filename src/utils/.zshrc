@@ -86,6 +86,7 @@ alias inv='nvim $(fzf -m --preview="less {}")'
 alias caler=clear
 alias clera=clear
 alias clrea=clear
+alias celar=clear
 
 # fly
 export FLYCTL_INSTALL="/home/matteo/.fly"
