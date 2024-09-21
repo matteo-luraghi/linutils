@@ -3,6 +3,9 @@
 Welcome to Linutils, your go-to Rust-based tool for making Linux installation a breeze. 
 
 Everything’s pre-configured to my taste, but you can easily customize it to match your own preferences!
+
+![linutils](https://github.com/user-attachments/assets/9711d70b-7215-42b9-9c81-9863514e38ce)
+
 ## 🚀 Features
 
 - Multi-Distro Support: Works with both Ubuntu and Fedora.
