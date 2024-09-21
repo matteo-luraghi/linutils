@@ -25,8 +25,9 @@ gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,m
 gpasswd --add $USER i2c
 
 # Change wallpaper
-gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$USER/linutils/src/utils/wallpaper.jpg
-gsettings set org.gnome.desktop.background picture-uri file:///home/$USER/linutils/src/utils/wallpaper.jpg
+cp /home/$USER/linutils/src/utils/wallpaper.jpg /home/$USER/Pictures/
+gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$USER/Pictures/wallpaper.jpg
+gsettings set org.gnome.desktop.background picture-uri file:///home/$USER/Pictures/wallpaper.jpg
 
 # Switch windows with alt+tab
 gsettings set org.gnome.shell.app-switcher current-workspace-only false

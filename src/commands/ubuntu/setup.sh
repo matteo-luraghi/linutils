@@ -47,9 +47,9 @@ echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codenam
 gpasswd --add $USER i2c
 
 # Change Wallpaper
-cd $builddir
-gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$USER/linutils/src/utils/wallpaper.jpg
-gsettings set org.gnome.desktop.background picture-uri file:///home/$USER/linutils/src/utils/wallpaper.jpg
+cp /home/$USER/linutils/src/utils/wallpaper.jpg /home/$USER/Pictures/
+gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$USER/Pictures/wallpaper.jpg
+gsettings set org.gnome.desktop.background picture-uri file:///home/$USER/Pictures/wallpaper.jpg
 
 # Setup the dock
 gsettings set org.gnome.shell favorite-apps "['org.gnome.Nautilus.desktop', 'firefox.desktop', 'kitty.desktop']"
