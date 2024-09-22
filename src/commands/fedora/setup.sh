@@ -21,9 +21,6 @@ sudo dnf update -y
 # Restore minimize and maximize buttons
 gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
 
-# Get permissions to use the brightness control extension
-gpasswd --add $USER i2c
-
 # Change wallpaper
 cp /home/$USER/linutils/src/utils/wallpaper.jpg /home/$USER/Pictures/
 gsettings set org.gnome.desktop.background picture-uri-dark file:///home/$USER/Pictures/wallpaper.jpg
@@ -37,4 +34,4 @@ gsettings set org.gnome.desktop.wm.keybindings switch-windows "['<Alt>Tab']"
 gsettings set org.gnome.shell favorite-apps "['org.gnome.Nautilus.desktop', 'firefox.desktop', 'kitty.desktop']"
 
 # Setup battery percentage
-git@github.com:matteo-luraghi/linutils.git
+gsettings set org.gnome.desktop.interface show-battery-percentage true

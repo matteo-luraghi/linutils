@@ -10,11 +10,11 @@ Everything’s pre-configured to my taste, but you can easily customize it to ma
 
 - Multi-Distro Support: Works with both Ubuntu and Fedora.
 - Automated Software Installation:
-  - Essential tools like docker, go, python, java.
+  - Development tools like neovim, lazygit and docker.
   - Productivity apps like discord.
-  - Development tools like neovim and lazygit.
 - Environment Setup:
-  - Configure your workspace with hyprland and alacritty.
+  - Configure your terminal with zsh, alacritty and kitty.
+  - Setup your workflow with i3 and tmux.
   - Custom environment variables and aliases.
 - Customization: Modify the configuration file and the bash scripts to add or remove packages and settings as needed.
 - Blazingly fast: Built with Rust for performance and reliability.
