@@ -9,50 +9,32 @@ tmux has-session -t $SESH 2>/dev/null
 # if session doesn't exist create session
 if [ $? != 0 ]; then
 
-	# active projects
-	projects=$(echo "experiments linutils notifiche-app notifiche-api py-twitch-bot" | tr ' ' '\n')
+  # dynamically get directories from "Radio/IT" and "Coding" omitting directories starting with "_"
+  projects=$(find Radio/IT Coding -mindepth 1 -maxdepth 1 -type d ! -name '_*')
 
-	# select a project via fzf
-	selected=$(printf "$projects" | fzf)
-	if [[ -z $selected ]]; then
-		exit 0
-	fi
+  # select a project via fzf
+  selected=$(printf "$projects" | fzf)
+  if [[ -z $selected ]]; then
+    exit 0
+  fi
 
-	case $selected in
-	"experiments")
-		dir="Coding/Experiments"
-		;;
-	"linutils")
-		dir="linutils"
-		;;
-	"notifiche-app")
-		dir="Radio/servizi-notifiche-app"
-		;;
-	"notifiche-api")
-		dir="Radio/servizi-notifiche-api"
-		;;
-	"py-twitch-bot")
-		dir="Radio/py-twitch-bot"
-		;;
-	esac
+  tmux new-session -d -s $SESH -n "nvim"
 
-	tmux new-session -d -s $SESH -n "nvim"
+  # nvim window
+  tmux send-keys -t $SESH:nvim "cd $selected" C-m
+  tmux send-keys -t $SESH:nvim "nvim" C-m
 
-	# nvim window
-	tmux send-keys -t $SESH:nvim "cd $dir" C-m
-	tmux send-keys -t $SESH:nvim "nvim" C-m
+  # terminal window
+  tmux new-window -t $SESH -n "zsh"
+  tmux send-keys -t $SESH:zsh "cd $selected" C-m
 
-	# terminal window
-	tmux new-window -t $SESH -n "zsh"
-	tmux send-keys -t $SESH:zsh "cd $dir" C-m
+  # git window
+  tmux new-window -t $SESH -n "git"
+  tmux send-keys -t $SESH:git "cd $selected" C-m
+  tmux send-keys -t $SESH:git "lazygit" C-m
 
-	# git window
-	tmux new-window -t $SESH -n "git"
-	tmux send-keys -t $SESH:git "cd $dir" C-m
-	tmux send-keys -t $SESH:git "lazygit" C-m
-
-	# select nvim window
-	tmux select-window -t $SESH:nvim
+  # select nvim window
+  tmux select-window -t $SESH:nvim
 fi
 
 # attach to session
