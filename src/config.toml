@@ -10,6 +10,7 @@ packages = [
   "ddcutil",
   "discord",
   "docker",
+  "docker-desktop",
   "fzf",
   "golang",
   "i3",
