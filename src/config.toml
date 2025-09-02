@@ -18,6 +18,7 @@ packages = [
   "nala",
   "neofetch",
   "neovim",
+  "podman",
   "setup",
   "tldr",
   "tmux",
