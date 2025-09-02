@@ -19,6 +19,7 @@ packages = [
   "neofetch",
   "neovim",
   "podman",
+  "podman-desktop",
   "setup",
   "tldr",
   "tmux",
