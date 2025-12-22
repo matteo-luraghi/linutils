@@ -71,7 +71,7 @@ source $ZSH/oh-my-zsh.sh
 # User configuration
 
 # Start keychain and load your ssh key
-eval $(keychain --eval --agents ssh git_fedora)
+eval $(keychain --eval --quiet git_fedora)
 
 # go
 export PATH=$PATH:/usr/local/go/bin
