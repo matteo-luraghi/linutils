@@ -4,6 +4,7 @@
 # then add an install script in the /commands directory
 packages = [
   "alacritty",
+  "brave",
   "btop",
   "ca-certificates",
   "cowsay",
