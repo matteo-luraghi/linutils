@@ -30,6 +30,18 @@ offset.y = 0
 glyph_offset.x = 0
 glyph_offset.y = 0
 
+[font.normal]
+family = "Roboto Mono for Powerline"
+style = "Regular"
+
+[font.bold]
+family = "Roboto Mono for Powerline"
+style = "Bold"
+
+[font.italic]
+family = "Roboto Mono for Powerline"
+style = "Italic"
+
 [mouse]
 
 hide_when_typing = true
@@ -168,3 +180,6 @@ action = "Minimize"
 key = "C"
 mods = "Control"
 chars = "\u0003"
+
+[env]
+TERM = "xterm-256color"
