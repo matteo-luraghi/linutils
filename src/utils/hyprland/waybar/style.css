@@ -31,12 +31,12 @@
 }
 
 window#waybar {
-    background-color: rgba(0,0,0,0.8);
+    background-color: #000000;
     border-bottom: 0px solid #ffffff;
     /* color: #FFFFFF; */
     background: transparent;
     transition-property: background-color;
-    transition-duration: .5s;
+    transition-duration: 0s;
 }
 
 /* -----------------------------------------------------
@@ -265,21 +265,6 @@ window#waybar.empty #window {
 }
 
 /* -----------------------------------------------------
- * Custom Modules
- * ----------------------------------------------------- */
-
-#custom-appmenu {
-    background-color: @backgrounddark;
-    font-size: 16px;
-    color: @textcolor1;
-    border-radius: 5px 5px 5px 5px;
-    padding: 0px 10px 0px 10px;
-    margin: 2px 17px 2px 0px;
-    opacity:1.0;
-    border:3px solid @bordercolor;
-}
-
-/* -----------------------------------------------------
  * Custom Notification
  * ----------------------------------------------------- */
 
@@ -329,21 +314,6 @@ window#waybar.empty #window {
 #custom-updates.red {
     background-color: #dc2f2f;
     color: #FFFFFF;
-}
-
-/* -----------------------------------------------------
- * Hardware Group
- * ----------------------------------------------------- */
-
-#disk,#memory,#cpu,#language {
-    margin:0px 10px 0px 0px;
-    padding:0px;
-    font-size:16px;
-    color:@iconcolor;
-}
-
-#language {
-    margin-right:10px;
 }
 
 /* -----------------------------------------------------
@@ -478,27 +448,4 @@ window#waybar.empty #window {
 #battery.critical:not(.charging) {
     background-color: #f53c3c;
     color: @textcolor3;
-    animation-name: blink;
-    animation-duration: 0.5s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
 }
-
-/* -----------------------------------------------------
- * Tray
- * ----------------------------------------------------- */
-
-#tray {
-    padding: 0px 15px 0px 0px;
-}
-
-#tray > .passive {
-    -gtk-icon-effect: dim;
-}
-
-#tray > .needs-attention {
-    -gtk-icon-effect: highlight;
-}
-
-
