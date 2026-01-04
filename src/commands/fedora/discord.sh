@@ -5,8 +5,5 @@ sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfre
 
 sudo dnf update -y
 
-# Install alacritty
+# Install discord
 sudo dnf install discord -y
-
-# Make Discord screen sharing work: uncomment WaylandEnable=false
-sudo sed -i '/^#WaylandEnable=false/s/^#//' /etc/gdm/custom.conf
