@@ -26,6 +26,7 @@ packages = [
   "tmux",
   "trash-cli",
   "webeep-sync",
+  "zen-browser",
   "zsh",
 ]
 
