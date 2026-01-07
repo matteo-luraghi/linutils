@@ -87,13 +87,16 @@
             "car": "",
             "default": ["", " ", " "]
         },
-        "on-click": "XDG_CURRENT_DESKTOP=GNOME gnome-control-center sound"
+        "on-click": "pavucontrol"
     },
 
     // Bluetooth
     "bluetooth": {
-        "format-disabled": "",
-        "format-off": "",
+        "format-disabled": " Off",
+        "format-off": " Off",
+        "tooltip-format": "{controller_alias}\t{controller_address}",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
         "interval": 60,
         "on-click": "blueman-manager",
         "format-no-controller": ""
