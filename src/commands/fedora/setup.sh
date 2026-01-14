@@ -18,6 +18,9 @@ fi
 # Update system
 sudo dnf update -y
 
+# Set nvim as git editor
+git config --global core.editor "nvim"
+
 # Restore minimize and maximize buttons
 gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
 
