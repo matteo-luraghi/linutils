@@ -14,8 +14,10 @@
         "hyprland/workspaces",
     ],
     "modules-right": [
-        "pulseaudio", 
+        "custom/tailscale",
         "network", 
+        "bluetooth",
+        "pulseaudio", 
         "battery", 
         "custom/exit",
         "clock"
