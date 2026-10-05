@@ -15,6 +15,7 @@ packages = [
   "fzf",
   "golang",
   "kitty",
+  "k8s",
   "lazygit",
   "nala",
   "neofetch",
